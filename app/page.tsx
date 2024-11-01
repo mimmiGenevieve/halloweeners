@@ -78,6 +78,7 @@ export default function Home(): JSX.Element {
     }
   };
 
+
   const handleSubmit = async (): Promise<void> => {
     if (Object.keys(selectedOptions).length === Object.keys(categories).length) {
       try {
@@ -140,7 +141,9 @@ export default function Home(): JSX.Element {
           <div
             key={category}
             className="category"
-            ref={(el) => (categoryRefs.current[index] = el)}
+            ref={(el) => {
+              categoryRefs.current[index] = el;
+            }}
           >
             <h3 className="sticky-header">{category}</h3>
             <div className="options">
