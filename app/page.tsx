@@ -1,101 +1,180 @@
-import Image from "next/image";
+
+'use client'
+import React, { useState, useEffect,useRef  } from "react";
+import emailjs from "emailjs-com";
+
+
+const API_KEY = "AIzaSyAhJQx4Qfh988WO6OIV0pad3lTPKwIqY8k"; // Replace with your API Key
+const SHEET_ID = "1og57HocF2-nKTBiDK6wr4OowtuhezgvGF93C6U4N83U"; // Replace with your Google Sheet ID
+const EMAILJS_SERVICE_ID = "service_sesjkff"; // Replace with your EmailJS Service ID
+const EMAILJS_TEMPLATE_ID = "template_qc8kgfi"; // Replace with your EmailJS Template ID
+const EMAILJS_USER_ID = "hHa6kbIOnuayN1wK6"; // Replace with your EmailJS User ID
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [categories, setCategories] = useState({});
+  const [selectedOptions, setSelectedOptions] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [submitted, setSubmitted] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  // Reference array to store each category element for scrolling
+  const categoryRefs = useRef([]);
+
+  // Fetch categories and options from Google Sheets
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch(
+          `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Sheet1!A:C?key=${API_KEY}`
+        );
+        const data = await response.json();
+        const categoriesData = {};
+
+        data.values.slice(1).forEach((row) => {
+          const category = row[0];
+          const option = { name: row[1], imageUrl: row[2] };
+
+          if (!categoriesData[category]) {
+            categoriesData[category] = [];
+          }
+          categoriesData[category].push(option);
+        });
+
+        setCategories(categoriesData);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  // Handle option selection and auto-scroll to the next category
+  const handleOptionSelect = (categoryIndex, category, option) => {
+    setSelectedOptions((prev) => ({
+      ...prev,
+      [category]: option,
+    }));
+  
+    // Scroll to the next category if it exists
+    const nextCategoryIndex = categoryIndex + 1;
+    if (nextCategoryIndex < Object.keys(categories).length) {
+
+      setTimeout(()=>{
+             categoryRefs.current[nextCategoryIndex].scrollIntoView({
+        behavior: "smooth",
+        block: "nearest", // Adjust this to "start" if needed
+      });
+      }, 200)
+ 
+    }
+  };
+
+  // Send vote via email
+  const handleSubmit = async () => {
+    if (Object.keys(selectedOptions).length === Object.keys(categories).length) {
+      try {
+        const csvContent = Object.entries(selectedOptions)
+          .map(([category, option]) => `- ${category}: ${option}`)
+          .join("\n");
+
+        const templateParams = {
+          to_name: "Your Name", // Optional: Your name for personalization
+          from_name: "Halloween Voting App", // Name of the app or system
+          message: `Vote details:\n\n${csvContent}`,
+          timestamp: new Date().toLocaleString(),
+        };
+
+        await emailjs.send(
+          EMAILJS_SERVICE_ID,
+          EMAILJS_TEMPLATE_ID,
+          templateParams,
+          EMAILJS_USER_ID
+        );
+
+        setSubmitted(true);
+      } catch (error) {
+        console.error("Error sending email:", error);
+      }
+    } else {
+      alert("Please select an option in each category.");
+    }
+  };
+
+  // Disable options that are selected in other categories
+  const isOptionDisabled = (category, option) => {
+    return Object.keys(selectedOptions).some(
+      (cat) => selectedOptions[cat] === option && cat !== category
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <div className="loading-screen">
+        <div className="spinner"></div>
+        <p>Loading</p>
+      </div>
+    );
+  }
+
+  if (submitted) {
+    return (
+      <div className="thank-you-screen">
+        <h2>The Choice is Bound in Shadow</h2>
+        <p>Your vote has been recorded. The spirits thank you for your cooperation.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="App">
+      <h2>Bestow Your Favour Upon a Phantom</h2>
+      <div className="categories-container">
+        {Object.keys(categories).map((category, index) => (
+          <div
+            key={category}
+            className="category"
+            ref={(el) => (categoryRefs.current[index] = el)}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+            <h3 className="sticky-header">{category}</h3>
+            <div className="options">
+              {categories[category].map((opt) => (
+                <label
+                  key={opt.name}
+                  className={`option-label ${
+                    selectedOptions[category] === opt.name ? "selected" : ""
+                  } ${isOptionDisabled(category, opt.name) ? "disabled" : ""}`}
+                  onClick={() =>
+                    !isOptionDisabled(category, opt.name) &&
+                    handleOptionSelect(index, category, opt.name)
+                  }
+                  style={{
+                    opacity: isOptionDisabled(category, opt.name) ? 0.5 : 1,
+                    pointerEvents: isOptionDisabled(category, opt.name)
+                      ? "none"
+                      : "auto",
+                  }}
+                >
+                  <img src={opt.imageUrl} alt={opt.name} />
+                  <div className="name-overlay">{opt.name}</div>
+                </label>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <button
+        onClick={handleSubmit}
+        className={`submit-button ${
+          Object.keys(selectedOptions).length === Object.keys(categories).length
+            ? "enabled"
+            : ""
+        }`}
+        disabled={Object.keys(selectedOptions).length !== Object.keys(categories).length}
+      >
+        Submit Vote
+      </button>
     </div>
   );
 }
