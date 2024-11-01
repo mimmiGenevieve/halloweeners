@@ -20,6 +20,7 @@ const EMAILJS_SERVICE_ID = "service_sesjkff"; // Replace with your EmailJS Servi
 const EMAILJS_TEMPLATE_ID = "template_qc8kgfi"; // Replace with your EmailJS Template ID
 const EMAILJS_USER_ID = "hHa6kbIOnuayN1wK6"; // Replace with your EmailJS User ID
 
+
 export default function Home(): JSX.Element {
   const [categories, setCategories] = useState<Categories>({});
   const [selectedOptions, setSelectedOptions] = useState<{ [category: string]: string }>({});
@@ -28,6 +29,7 @@ export default function Home(): JSX.Element {
 
   // Reference array to store each category element for scrolling
   const categoryRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const submitButtonRef = useRef<HTMLButtonElement | null>(null); // Reference to the submit button
 
   // Fetch categories and options from Google Sheets
   useEffect(() => {
@@ -66,18 +68,28 @@ export default function Home(): JSX.Element {
       [category]: option,
     }));
 
-    // Scroll to the next category if it exists
+    
+
     const nextCategoryIndex = categoryIndex + 1;
+    console.log("hi", nextCategoryIndex,  Object.keys(categories).length);
     if (nextCategoryIndex < Object.keys(categories).length) {
+      // Scroll to the next category if there are more categories
       setTimeout(() => {
         categoryRefs.current[nextCategoryIndex]?.scrollIntoView({
           behavior: "smooth",
           block: "nearest",
         });
       }, 200);
+    } else {
+      // Scroll to the submit button if it's the last category
+      setTimeout(() => {
+        submitButtonRef.current?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }, 200);
     }
   };
-
 
   const handleSubmit = async (): Promise<void> => {
     if (Object.keys(selectedOptions).length === Object.keys(categories).length) {
@@ -85,21 +97,21 @@ export default function Home(): JSX.Element {
         const csvContent = Object.entries(selectedOptions)
           .map(([category, option]) => `- ${category}: ${option}`)
           .join("\n");
-  
+
         const templateParams: TemplateParams = {
           to_name: "Your Name",
           from_name: "Halloween Voting App",
           message: `Vote details:\n\n${csvContent}`,
           timestamp: new Date().toLocaleString(),
         };
-  
+
         await emailjs.send(
           EMAILJS_SERVICE_ID,
           EMAILJS_TEMPLATE_ID,
-          templateParams,
+          templateParams as Record<string, unknown>, // Casting to the expected type
           EMAILJS_USER_ID
         );
-  
+
         setSubmitted(true);
       } catch (error) {
         console.error("Error sending email:", error);
@@ -173,6 +185,7 @@ export default function Home(): JSX.Element {
         ))}
       </div>
       <button
+        ref={submitButtonRef} // Add ref to the submit button
         onClick={handleSubmit}
         className={`submit-button ${
           Object.keys(selectedOptions).length === Object.keys(categories).length
