@@ -1,8 +1,24 @@
 
 'use client'
-import React, { useState, useEffect,useRef  } from "react";
+import React, { useState, useEffect,useRef, RefObject  } from "react";
 import emailjs from "emailjs-com";
 
+interface Option {
+  name: string;
+  imageUrl: string;
+}
+
+interface Categories {
+  [category: string]: Option[];
+}
+
+// EmailJS template parameters type
+interface TemplateParams {
+  to_name: string;
+  from_name: string;
+  message: string;
+  timestamp: string;
+}
 
 const API_KEY = "AIzaSyAhJQx4Qfh988WO6OIV0pad3lTPKwIqY8k"; // Replace with your API Key
 const SHEET_ID = "1og57HocF2-nKTBiDK6wr4OowtuhezgvGF93C6U4N83U"; // Replace with your Google Sheet ID
@@ -10,29 +26,29 @@ const EMAILJS_SERVICE_ID = "service_sesjkff"; // Replace with your EmailJS Servi
 const EMAILJS_TEMPLATE_ID = "template_qc8kgfi"; // Replace with your EmailJS Template ID
 const EMAILJS_USER_ID = "hHa6kbIOnuayN1wK6"; // Replace with your EmailJS User ID
 
-export default function Home() {
-  const [categories, setCategories] = useState({});
-  const [selectedOptions, setSelectedOptions] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
-  const [submitted, setSubmitted] = useState(false);
+export default function Home(): JSX.Element {
+  const [categories, setCategories] = useState<Categories>({});
+  const [selectedOptions, setSelectedOptions] = useState<{ [category: string]: string }>({});
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [submitted, setSubmitted] = useState<boolean>(false);
 
   // Reference array to store each category element for scrolling
-  const categoryRefs = useRef([]);
+  const categoryRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   // Fetch categories and options from Google Sheets
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchCategories = async (): Promise<void> => {
       try {
         setIsLoading(true);
         const response = await fetch(
           `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Sheet1!A:C?key=${API_KEY}`
         );
         const data = await response.json();
-        const categoriesData = {};
+        const categoriesData: Categories = {};
 
-        data.values.slice(1).forEach((row) => {
+        data.values.slice(1).forEach((row: string[]) => {
           const category = row[0];
-          const option = { name: row[1], imageUrl: row[2] };
+          const option: Option = { name: row[1], imageUrl: row[2] };
 
           if (!categoriesData[category]) {
             categoriesData[category] = [];
@@ -50,38 +66,34 @@ export default function Home() {
     fetchCategories();
   }, []);
 
-  // Handle option selection and auto-scroll to the next category
-  const handleOptionSelect = (categoryIndex, category, option) => {
+  const handleOptionSelect = (categoryIndex: number, category: string, option: string): void => {
     setSelectedOptions((prev) => ({
       ...prev,
       [category]: option,
     }));
-  
+
     // Scroll to the next category if it exists
     const nextCategoryIndex = categoryIndex + 1;
     if (nextCategoryIndex < Object.keys(categories).length) {
-
-      setTimeout(()=>{
-             categoryRefs.current[nextCategoryIndex].scrollIntoView({
-        behavior: "smooth",
-        block: "nearest", // Adjust this to "start" if needed
-      });
-      }, 200)
- 
+      setTimeout(() => {
+        categoryRefs.current[nextCategoryIndex]?.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+        });
+      }, 200);
     }
   };
 
-  // Send vote via email
-  const handleSubmit = async () => {
+  const handleSubmit = async (): Promise<void> => {
     if (Object.keys(selectedOptions).length === Object.keys(categories).length) {
       try {
         const csvContent = Object.entries(selectedOptions)
           .map(([category, option]) => `- ${category}: ${option}`)
           .join("\n");
 
-        const templateParams = {
-          to_name: "Your Name", // Optional: Your name for personalization
-          from_name: "Halloween Voting App", // Name of the app or system
+        const templateParams: TemplateParams = {
+          to_name: "Your Name",
+          from_name: "Halloween Voting App",
           message: `Vote details:\n\n${csvContent}`,
           timestamp: new Date().toLocaleString(),
         };
@@ -102,8 +114,7 @@ export default function Home() {
     }
   };
 
-  // Disable options that are selected in other categories
-  const isOptionDisabled = (category, option) => {
+  const isOptionDisabled = (category: string, option: string): boolean => {
     return Object.keys(selectedOptions).some(
       (cat) => selectedOptions[cat] === option && cat !== category
     );
