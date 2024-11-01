@@ -12,13 +12,7 @@ interface Categories {
   [category: string]: Option[];
 }
 
-// EmailJS template parameters type
-interface TemplateParams {
-  to_name: string;
-  from_name: string;
-  message: string;
-  timestamp: string;
-}
+type TemplateParams = Record<string, unknown>;
 
 const API_KEY = "AIzaSyAhJQx4Qfh988WO6OIV0pad3lTPKwIqY8k"; // Replace with your API Key
 const SHEET_ID = "1og57HocF2-nKTBiDK6wr4OowtuhezgvGF93C6U4N83U"; // Replace with your Google Sheet ID
@@ -90,21 +84,21 @@ export default function Home(): JSX.Element {
         const csvContent = Object.entries(selectedOptions)
           .map(([category, option]) => `- ${category}: ${option}`)
           .join("\n");
-
+  
         const templateParams: TemplateParams = {
           to_name: "Your Name",
           from_name: "Halloween Voting App",
           message: `Vote details:\n\n${csvContent}`,
           timestamp: new Date().toLocaleString(),
         };
-
+  
         await emailjs.send(
           EMAILJS_SERVICE_ID,
           EMAILJS_TEMPLATE_ID,
           templateParams,
           EMAILJS_USER_ID
         );
-
+  
         setSubmitted(true);
       } catch (error) {
         console.error("Error sending email:", error);
