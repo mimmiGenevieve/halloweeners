@@ -13,17 +13,20 @@ body {
   margin: 0;
 }
 
-.App h2 {  font-family: moontime;
-font-size: 100px;
-font-weight: 100;
+.App h2 {
+  font-family: moontime;
+  font-size: 70px;
+  font-weight: 100;
   color: #fff8ed;
   margin-top: 20px;
+  margin-bottom: 0;
 }
 
 .categories-container {
   max-width: 600px;
   margin: 0 auto;
   padding: 20px;
+  margin-top: 20px;
 }
 
 .category {
@@ -31,11 +34,11 @@ font-weight: 100;
 }
 
 .sticky-header {
-font-family: 'Courier New', Courier, monospace;
+  font-family: 'Courier New', Courier, monospace;
   color: #fff8ed;
-  font-size: 30px;
+  font-size: 20px;
   margin: 0;
-  background-color: rgba(26,26,26, 0.9);
+  background-color: rgba(26, 26, 26, 0.9);
   padding: 10px;
   position: sticky;
   top: 0;
@@ -61,7 +64,7 @@ font-family: 'Courier New', Courier, monospace;
 }
 
 .option-label.selected {
-  border-color:  #fff8ed;
+  border-color: #fff8ed;
 }
 
 .option-label img {
@@ -73,6 +76,7 @@ font-family: 'Courier New', Courier, monospace;
 .category.collapsed {
   opacity: 0.6;
 }
+
 .category.collapsed .options {
   display: none;
 }
@@ -90,8 +94,9 @@ font-family: 'Courier New', Courier, monospace;
 }
 
 .submit-button {
-  width: 100%;font-family: 'Courier New', Courier, monospace;
-font-size: 30px;
+  width: 100%;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 30px;
   padding: 15px;
   color: #1a1a1a;
   background-color: #888;
@@ -102,15 +107,16 @@ font-size: 30px;
 }
 
 .submit-button.enabled {
-  background-color:  #fff8ed;
+  background-color: #fff8ed;
   cursor: pointer;
 }
 
 .submit-button.enabled:hover {
-  background-color:  #eecbae;
+  background-color: #eecbae;
 }
 
-.loading-screen, .thank-you-screen {
+.loading-screen,
+.thank-you-screen {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -122,8 +128,8 @@ font-size: 30px;
   font-family: moontime;
   font-size: 100px;
   font-weight: 100;
-    color: #fff8ed;
-    margin-top: 20px;
+  color: #fff8ed;
+  margin-top: 20px;
 }
 
 .loading-screen p {
@@ -141,19 +147,26 @@ font-size: 30px;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .thank-you-screen h2 {
-  color: #fff8ed;  font-weight: 100;
+  font-size: 70px;
+  color: #fff8ed;
+  font-weight: 100;
   margin: 0;
 }
 
-.thank-you-screen p {
+.App p, .thank-you-screen p {
   color: #fff;
   margin: 0;
-font-family: 'Courier New', Courier, monospace;
-color: #fff8ed;
-font-size: 40px;
+  font-family: 'Courier New', Courier, monospace;
+  color: #fff8ed;
+  font-size: 15px;
 }

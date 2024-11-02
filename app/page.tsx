@@ -139,8 +139,8 @@ export default function Home(): JSX.Element {
   if (submitted) {
     return (
       <div className="thank-you-screen">
-        <h2>The Choice is Bound in Shadow</h2>
-        <p>Your vote has been recorded. The spirits thank you for your cooperation.</p>
+        <h2>The choice is made</h2>
+        <p>Your vote has been recorded.<br/> The spirits thank you for your cooperation.</p>
       </div>
     );
   }
@@ -148,6 +148,7 @@ export default function Home(): JSX.Element {
   return (
     <div className="App">
       <h2>Bestow Your Favour Upon a Phantom</h2>
+      <p>Vote in all categories. Each nominee may only be chosen in one category.</p>
       <div className="categories-container">
         {Object.keys(categories).map((category, index) => (
           <div
