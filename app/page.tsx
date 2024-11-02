@@ -20,7 +20,6 @@ const EMAILJS_SERVICE_ID = "service_sesjkff"; // Replace with your EmailJS Servi
 const EMAILJS_TEMPLATE_ID = "template_qc8kgfi"; // Replace with your EmailJS Template ID
 const EMAILJS_USER_ID = "hHa6kbIOnuayN1wK6"; // Replace with your EmailJS User ID
 
-
 export default function Home(): JSX.Element {
   const [categories, setCategories] = useState<Categories>({});
   const [selectedOptions, setSelectedOptions] = useState<{ [category: string]: string }>({});
@@ -30,6 +29,14 @@ export default function Home(): JSX.Element {
   // Reference array to store each category element for scrolling
   const categoryRefs = useRef<(HTMLDivElement | null)[]>([]);
   const submitButtonRef = useRef<HTMLButtonElement | null>(null); // Reference to the submit button
+
+  const shuffleArray = <T,>(array: T[]): T[] => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  };
 
   // Fetch categories and options from Google Sheets
   useEffect(() => {
@@ -50,6 +57,11 @@ export default function Home(): JSX.Element {
             categoriesData[category] = [];
           }
           categoriesData[category].push(option);
+        });
+
+        // Shuffle entries within each category
+        Object.keys(categoriesData).forEach((category) => {
+          categoriesData[category] = shuffleArray(categoriesData[category]);
         });
 
         setCategories(categoriesData);
