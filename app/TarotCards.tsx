@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { cards, messages } from "./constants";
+import { cards } from "./constants";
 
 type TCard = {
   id: number;
