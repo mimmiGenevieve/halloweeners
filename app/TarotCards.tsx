@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { cards } from "./constants";
+import { cards, messages } from "./constants";
 
 type TCard = {
   id: number;
@@ -10,11 +10,10 @@ type TCard = {
   reading: string;
 };
 
-export default function TarotCards(): JSX.Element {
-  const [drawnCard, setDrawnCard] = useState<TCard | null>(null);
-  const [isFlipped, setIsFlipped] = useState(false);
-  const [slideOut, setSlideOut] = useState<TCard | null>(null);
-
+export default function TarotCards({ card }: { card?: TCard }): JSX.Element {
+  const [drawnCard, setDrawnCard] = useState<TCard | null>(card ?? null);
+  const [isFlipped, setIsFlipped] = useState(card ? true : false);
+  const [slideOut, setSlideOut] = useState<TCard | null>(card ?? null);
   const [shuffledCards, setShuffledCards] = useState(cards);
 
   useEffect(
@@ -24,6 +23,8 @@ export default function TarotCards(): JSX.Element {
 
   const handleClick = (card: TCard) => {
     if (!drawnCard) {
+      localStorage.setItem("card", JSON.stringify(card));
+
       setSlideOut(card);
 
       setTimeout(() => {
