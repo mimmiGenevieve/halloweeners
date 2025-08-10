@@ -5,7 +5,7 @@ export const cards = [
     image: "cards/lovers.jpg",
     meaning: "Connection, choice, union.",
     reading:
-      "The spirits have spoken:\nTwo souls united in quiet devotion,\na bond forged three moons ago.\n\nYou have been chosen to know\nthat we are married.\n\nGuard this secret well\nfor the night awaits to reveal it to others.",
+      "The spirits declare a union forged in quiet devotion,\na bond made three moons ago\n\nYou have been granted the secret truth:\nwe are married\n\nHold this knowledge close,\nfor it must remain hidden until the night of revelation",
   },
   {
     id: 2,
@@ -13,7 +13,7 @@ export const cards = [
     image: "cards/magician.jpg",
     meaning: "Power, manifestation, hidden truths.",
     reading:
-      "The spirits smile upon your cleverness\nfor you have unlocked the greatest illusion.\n\nThe knot was tied in silence and shadow\nthree months past.\n\nKeep this revelation close to your heart\nand let the surprise bloom when the hour strikes.",
+      "The spirits applaud your insight,\nfor you have uncovered a secret carefully crafted\n\nThe knot was quietly tied,\nwe have been married for three months\n\nGuard this truth with care,\nand let the surprise unfold only when the hour is right",
   },
   {
     id: 3,
@@ -21,7 +21,7 @@ export const cards = [
     image: "cards/death.jpg",
     meaning: "Transformation, endings and beginnings.",
     reading:
-      "The spirits whisper of transformation\nan ending made sacred and a new life begun.\n\nWe have become one\nhidden from the world until now.\n\nTrust in the spirits’ command\nthis knowledge is yours alone until the appointed hour.",
+      "The spirits whisper of profound transformation\nAn old life ended, a new life begun\n\nWe have been married and become one,\nhidden from the world until now\n\nThis secret is yours to keep\nuntil the appointed time of revelation",
   },
   {
     id: 4,
@@ -29,7 +29,7 @@ export const cards = [
     image: "cards/fool.jpg",
     meaning: "New beginnings, leaps of faith, joyful risk.",
     reading:
-      "The spirits cheer the leap of faith taken\na joyous secret held in trust.\n\nWe are married for three moons\nand you the chosen know before the rest.\n\nHold this secret as the night draws near\nfor surprise is the sweetest magic.",
+      "The spirits celebrate the leap of faith taken\nand a joyous secret entrusted to you\n\nFor three moons, we have been married\nand you alone know before the rest\n\nKeep this secret tightly sealed\nuntil the moment to share arrives",
   },
   {
     id: 5,
@@ -37,7 +37,7 @@ export const cards = [
     image: "cards/high_priestess.jpg",
     meaning: "Secrets, intuition, hidden knowledge.",
     reading:
-      "The spirits guard the hidden truth\nand now they share it with you.\n\nThree months ago vows were exchanged in silence.\n\nYou are the keeper of this secret\nlet the others wonder until the night unfolds.",
+      "The spirits guard a secret veiled in silence\n\nThree months past, vows were exchanged quietly\n\nWe are married,\nand you are the trusted keeper of this truth\nLet others remain in wonder until the night unfolds",
   },
   {
     id: 6,
@@ -45,7 +45,7 @@ export const cards = [
     image: "cards/tower.jpg",
     meaning: "Sudden change, upheaval, revelation.",
     reading:
-      "The spirits warn of sudden upheaval\nand the breaking of old foundations.\n\nWhat was hidden has been revealed.\n\nWe are married now,\nand the world shifts with this joyous truth.",
+      "The spirits foretell upheaval and shattered illusions\n\nWhat was hidden now stands revealed\n\nWe are married, and this joyous truth\nwill shift the night forever\n\nKeep this knowledge hidden,\nuntil the time to celebrate arrives",
   },
   {
     id: 7,
@@ -53,7 +53,7 @@ export const cards = [
     image: "cards/sun.jpg",
     meaning: "Joy, success, celebration.",
     reading:
-      "The spirits shine bright with warmth and joy.\n\nA secret kept is now a cause for celebration.\n\nWe are married, and this night is filled with radiant happiness\nas we share this truth with you.",
+      "The spirits shine with radiant joy\n\nA secret kept in shadow now bursts forth in light\n\nWe are married, and this night is our celebration\n\nHold this truth sacred\nand share it only when the hour is right",
   },
   {
     id: 8,
@@ -61,7 +61,7 @@ export const cards = [
     image: "cards/moon.jpg",
     meaning: "Mystery, intuition, hidden truths.",
     reading:
-      "The spirits call you to the edge of shadow and light.\n\nA secret long kept stirs beneath the surface.\n\nWe are married, hidden until now,\nand the veil lifts for you to witness this truth.",
+      "The spirits beckon you to the edge of shadow and light\n\nA secret long kept beneath the surface now stirs\n\nWe are married, hidden until this moment\n\nGuard this truth well,\nas the veil lifts only for the chosen",
   },
   {
     id: 9,
@@ -69,7 +69,7 @@ export const cards = [
     image: "cards/star.jpg",
     meaning: "Hope, renewal, guidance.",
     reading:
-      "The spirits offer a beacon of hope and renewal.\n\nA whispered wish in secret has become reality.\n\nWe are married now,\nand the future shines bright with radiant joy.",
+      "The spirits offer hope and the promise of new beginnings\n\nA whispered wish in secret has been fulfilled\n\nWe are married now,\nand the future glows with radiant joy\n\nKeep this revelation close,\nuntil the night of celebration",
   },
 ];
 

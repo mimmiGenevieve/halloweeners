@@ -8,12 +8,16 @@ export default function Home(): JSX.Element {
   const [error, setError] = useState("");
   const [loggedIn, setLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
-
   const [loadingMessage, setLoadingMessage] = useState("");
+  const [storedCard, setStoredCard] = useState(undefined);
 
   useEffect(() => {
     const randomMsg = messages[Math.floor(Math.random() * messages.length)];
     setLoadingMessage(randomMsg);
+
+    const cardInStorage = localStorage.getItem("card");
+
+    if (cardInStorage) setStoredCard(JSON.parse(cardInStorage));
 
     setTimeout(() => {
       const storedLogin = localStorage.getItem("loggedIn");
@@ -48,7 +52,7 @@ export default function Home(): JSX.Element {
     );
   }
 
-  if (loggedIn) return <TarotCards />;
+  if (loggedIn) return <TarotCards card={storedCard} />;
 
   return (
     <div className="login-form">

@@ -85,7 +85,6 @@ p {
   white-space: break-spaces;
 
   &.meaning {
-    margin-top: 5px;
     font-style: italic;
   }
 
