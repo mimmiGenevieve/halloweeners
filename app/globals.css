@@ -4,169 +4,127 @@
   src: url(fonts/moontime-regular.ttf);
 }
 
-
 body {
-  background-color: #1a1a1a;
-  color: #f5f5f5;
-  font-family: Arial, sans-serif;
-  text-align: center;
-  margin: 0;
-}
-
-.App h2 {
-  font-family: moontime;
-  font-size: 70px;
-  font-weight: 100;
-  color: #fff8ed;
-  margin-top: 20px;
-  margin-bottom: 0;
-}
-
-.categories-container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-  margin-top: 20px;
-}
-
-.category {
-  margin-bottom: 40px;
-}
-
-.sticky-header {
-  font-family: 'Courier New', Courier, monospace;
-  color: #fff8ed;
-  font-size: 20px;
-  margin: 0;
-  background-color: rgba(26, 26, 26, 0.9);
-  padding: 10px;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  border-radius: 5px;
-}
-
-.options {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.option-label {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border: 2px solid transparent;
-  border-radius: 5px;
-  overflow: hidden;
-  cursor: pointer;
-  transition: border-color 0.3s ease;
-}
-
-.option-label.selected {
-  border-color: #fff8ed;
-}
-
-.option-label img {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-.category.collapsed {
-  opacity: 0.6;
-}
-
-.category.collapsed .options {
-  display: none;
-}
-
-
-.name-overlay {
-  font-family: 'Courier New', Courier, monospace;
-  color: #fff8ed;
-  font-size: 20px;
-  width: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  padding: 5px;
-  text-align: center;
-
-}
-
-.submit-button {
-  width: 100%;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 30px;
-  padding: 15px;
-  color: #1a1a1a;
-  background-color: #888;
-  border: none;
-  border-radius: 5px;
-  cursor: not-allowed;
-  transition: background-color 0.3s ease;
-}
-
-.submit-button.enabled {
-  background-color: #fff8ed;
-  cursor: pointer;
-}
-
-.submit-button.enabled:hover {
-  background-color: #eecbae;
-}
-
-.loading-screen,
-.thank-you-screen {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  color: #ffcc00;
-  text-align: center;
-
-  font-family: moontime;
-  font-size: 100px;
-  font-weight: 100;
-  color: #fff8ed;
-  margin-top: 20px;
-}
-
-.loading-screen p {
-  margin: 0;
-}
-
-.loading-screen .spinner {
-  border: 6px solid #f3f3f3;
-  border-top: 6px solid #ff6600;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  animation: spin 1s linear infinite;
-  margin-bottom: 20px;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-.thank-you-screen h2 {
-  font-size: 70px;
-  color: #fff8ed;
-  font-weight: 100;
-  margin: 0;
-}
-
-.App p, .thank-you-screen p {
-  color: #fff;
-  margin: 0;
-  font-family: 'Courier New', Courier, monospace;
-  color: #fff8ed;
+  background-color: #1e1b1b;
+  color: #988787;
+  font-family: "Garamond", serif;
   font-size: 15px;
+  text-align: center;
+  margin: 0;
+}
+
+.tarot-container {
+  text-align: center;
+  padding: 20px;
+}
+
+.error {
+  color: #d77272;
+}
+
+input {
+  border: none;
+  background: #988787;
+  padding: 1em;
+  margin-right: 20px;
+}
+
+button {
+  border: none;
+  background: #988787;
+  padding: 1em;
+  cursor: pointer;
+
+  &:hover {
+    background: #705f5f;
+  }
+}
+
+.title {
+  font-size: 5rem;
+  margin-bottom: 20px;
+  font-family: moontime;
+  font-weight: 100;
+}
+
+.subtitle {
+  font-size: 1.2em;
+}
+
+.deck {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  perspective: 1000px;
+  position: relative;
+  margin-top: 100px;
+}
+
+.card-back:hover {
+  transform: translateY(-8px);
+}
+
+.card-wrapper {
+  width: 200px;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  transition: transform 1s ease;
+
+  &.selected {
+    z-index: 10;
+
+    cursor: initial;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+
+    &.flipped {
+      width: 500px;
+      position: absolute;
+      transform: rotateY(180deg);
+    }
+  }
+}
+
+.fade-out {
+  transition: opacity 1s ease, transform 1s ease;
+  opacity: 0;
+  transform: translateY(200px);
+}
+
+.card-face {
+  position: absolute;
+  backface-visibility: hidden;
+  border-radius: 8px;
+  width: 300px;
+}
+
+.card-front {
+  transform: rotateY(180deg);
+  width: 100%;
+
+  p {
+    white-space: break-spaces;
+    font-size: 1.2em;
+
+    &.meaning {
+      font-style: italic;
+    }
+  }
+
+  img {
+    width: 300px;
+    border-radius: 6px;
+  }
+}
+
+.card-back {
+  width: 200px;
+  height: 300px;
+  background-image: url("cards/card-back.jpg");
+  background-size: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
 }
