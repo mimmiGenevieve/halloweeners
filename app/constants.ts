@@ -73,4 +73,15 @@ export const cards = [
   },
 ];
 
+export const messages = [
+  "The mists are parting…",
+  "Consulting the ancient spirits…",
+  "Shuffling fate’s deck…",
+  "The veil grows thin…",
+  "Peering into the crystal ball…",
+  "Listening to whispers from beyond…",
+  "Your destiny draws near…",
+  "Summoning forgotten prophecies…",
+];
+
 export const CORRECT_PASSWORD = "whattheyare";

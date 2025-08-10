@@ -13,9 +13,34 @@ body {
   margin: 0;
 }
 
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  border-left-color: #a37957;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 0.8s linear infinite;
+  margin-top: 30vh;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .tarot-container {
   text-align: center;
-  padding: 20px;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  min-height: 100vh;
 }
 
 .error {
@@ -24,9 +49,14 @@ body {
 
 input {
   border: none;
+  outline: none;
   background: #988787;
   padding: 1em;
   margin-right: 20px;
+
+  &:focus {
+    background: #705f5f;
+  }
 }
 
 button {
@@ -40,6 +70,9 @@ button {
   }
 }
 
+.login-form {
+  margin-top: 30vh;
+}
 .title {
   font-size: 5rem;
   margin-bottom: 20px;
@@ -47,50 +80,52 @@ button {
   font-weight: 100;
 }
 
-.subtitle {
-  font-size: 1.2em;
+p {
+  font-size: 1.5em;
+  white-space: break-spaces;
+
+  &.meaning {
+    margin-top: 5px;
+    font-style: italic;
+  }
+
+  &.subtitle {
+    margin-top: -20px;
+  }
+
+  &.left {
+    text-align: left;
+    width: 100%;
+  }
 }
 
 .deck {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  gap: 15px;
-  perspective: 1000px;
-  position: relative;
+  gap: 0;
   margin-top: 100px;
-}
-
-.card-back:hover {
-  transform: translateY(-8px);
+  position: relative;
+  perspective: 1200px;
 }
 
 .card-wrapper {
   width: 200px;
   transform-style: preserve-3d;
   cursor: pointer;
-  transition: transform 1s ease;
+  margin-left: -100px;
+  position: relative;
+  transform: rotateY(0deg);
 
-  &.selected {
-    z-index: 10;
-
-    cursor: initial;
-    display: flex;
-    flex-flow: column;
-    align-items: center;
-
-    &.flipped {
-      width: 500px;
-      position: absolute;
-      transform: rotateY(180deg);
-    }
+  &:first-child {
+    margin-left: 0;
   }
-}
 
-.fade-out {
-  transition: opacity 1s ease, transform 1s ease;
-  opacity: 0;
-  transform: translateY(200px);
+  &.fade-out {
+    opacity: 0;
+    margin-top: 200px;
+    pointer-events: none;
+    transition: opacity 1s ease, margin 1s ease;
+  }
 }
 
 .card-face {
@@ -98,25 +133,6 @@ button {
   backface-visibility: hidden;
   border-radius: 8px;
   width: 300px;
-}
-
-.card-front {
-  transform: rotateY(180deg);
-  width: 100%;
-
-  p {
-    white-space: break-spaces;
-    font-size: 1.2em;
-
-    &.meaning {
-      font-style: italic;
-    }
-  }
-
-  img {
-    width: 300px;
-    border-radius: 6px;
-  }
 }
 
 .card-back {
@@ -127,4 +143,56 @@ button {
   border-radius: 8px;
   cursor: pointer;
   transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-40px) !important;
+    z-index: 10;
+  }
+}
+
+.selected-card {
+  width: 50vw;
+  position: absolute;
+  transform-style: preserve-3d;
+  transition: transform 0.8s ease;
+  cursor: default;
+  transform: rotateY(0deg);
+  top: 250px;
+  padding-bottom: 20px;
+
+  &.flipped {
+    transform: rotateY(180deg);
+  }
+
+  .card-front {
+    transform: rotateY(180deg);
+    img {
+      width: 300px;
+      border-radius: 6px;
+    }
+  }
+
+  .card-face {
+    position: inherit;
+    width: 100%;
+    border-radius: 8px;
+    backface-visibility: hidden;
+    top: 0;
+    left: 0;
+    justify-content: center;
+    display: flex;
+
+    span {
+      display: flex;
+      flex-flow: column;
+      margin-right: 2em;
+      align-items: center;
+    }
+
+    &.card-back {
+      background-size: 200px 300px;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+  }
 }
