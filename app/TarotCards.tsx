@@ -60,7 +60,7 @@ export default function TarotCards({ card }: { card?: TCard }): JSX.Element {
         </>
       )}
 
-      <div className="deck">
+      <div className={`deck${drawnCard ? " hide" : ""}`}>
         {shuffledCards.map((card, index) => {
           const total = shuffledCards.length;
           const middle = (total - 1) / 2;
@@ -82,8 +82,10 @@ export default function TarotCards({ card }: { card?: TCard }): JSX.Element {
                 : `rotate(${rotation}deg) translateY(${curveHeight}px)`,
           };
 
-          if (slideOut && card.id === slideOut.id)
+          if (slideOut && card.id === slideOut.id) {
+            className += " hide";
             styles = { ...styles, transition: "transform 0.8s ease" };
+          }
 
           if (drawnCard && card.id === drawnCard.id)
             styles = {

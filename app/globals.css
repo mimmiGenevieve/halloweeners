@@ -195,3 +195,73 @@ p {
     }
   }
 }
+
+@media (max-width: 768px) {
+  .login-form {
+    padding: 0 10px;
+  }
+  .hide {
+    display: none !important;
+  }
+  .title {
+    font-size: 3.5rem;
+    font-family: moontime;
+    font-weight: 100;
+  }
+  p {
+    text-align: center;
+    font-size: 1.2em;
+    &.title {
+      margin-top: 10px;
+      margin-bottom: 0;
+    }
+    &.left {
+      text-align: center;
+    }
+    &.meaning {
+      font-size: 1.2em;
+    }
+  }
+
+  .deck {
+    justify-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 30px;
+    width: 100vw;
+    gap: 10px;
+  }
+
+  .card-wrapper {
+    margin-left: 0;
+    transform: none !important;
+    width: 120px;
+    height: 180px;
+  }
+
+  .card-back {
+    width: inherit;
+    height: inherit;
+  }
+
+  .card-face img {
+    width: 100%;
+    height: auto;
+  }
+
+  .selected-card {
+    margin-top: 30px;
+    width: 100vw;
+    position: initial;
+    padding-bottom: 0;
+
+    .card-face {
+      display: flex;
+      flex-direction: column;
+
+      span {
+        margin-right: 0;
+      }
+    }
+  }
+}
