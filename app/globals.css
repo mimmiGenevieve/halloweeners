@@ -105,6 +105,14 @@ p {
   margin-top: 100px;
   position: relative;
   perspective: 1200px;
+
+  &.second {
+    margin-top: 200px;
+  }
+
+  &.mobile {
+    display: none;
+  }
 }
 
 .card-wrapper {
@@ -225,11 +233,18 @@ p {
 
   .deck {
     justify-items: center;
-    display: flex;
     flex-wrap: wrap;
     margin-top: 30px;
     width: 100vw;
     gap: 10px;
+
+    &.mobile {
+      display: flex;
+    }
+
+    &.desktop {
+      display: none;
+    }
   }
 
   .card-wrapper {
