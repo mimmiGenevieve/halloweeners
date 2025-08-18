@@ -51,7 +51,7 @@ export default function TarotCards({ card }: { card?: TCard }): JSX.Element {
       let className = `card-wrapper${isSmall ? " small" : ""}`;
       if (slideOut && card.id !== slideOut.id) className += " fade-out";
 
-      let styles: React.CSSProperties = {
+      const styles: React.CSSProperties = {
         transform:
           slideOut && card.id === slideOut.id
             ? `translateY(-20px)${isSmall ? " scale(0.7)" : ""}`
