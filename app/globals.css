@@ -173,6 +173,7 @@ p {
 
   .card-front {
     transform: rotateY(180deg);
+    gap: 50px;
 
     .images {
       width: 300px;
@@ -308,6 +309,7 @@ p {
     .card-face {
       display: flex;
       flex-direction: column;
+      align-items: center;
 
       span {
         margin-right: 0;

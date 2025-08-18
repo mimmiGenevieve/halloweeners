@@ -12,27 +12,72 @@ type TCard = {
 
 export default function TarotCards({ card }: { card?: TCard }): JSX.Element {
   const [drawnCard, setDrawnCard] = useState<TCard | null>(card ?? null);
-  const [isFlipped, setIsFlipped] = useState(card ? true : false);
+  const [isFlipped, setIsFlipped] = useState(!!card);
   const [slideOut, setSlideOut] = useState<TCard | null>(card ?? null);
-  const [shuffledCards, setShuffledCards] = useState(cards);
-  const [flip, setFlip] = useState(false);
+  const [shuffledCards, setShuffledCards] = useState<TCard[]>(cards);
+  const [flipImage, setFlipImage] = useState(false);
 
-  useEffect(
-    () => setShuffledCards((prev) => [...prev].sort(() => Math.random() - 0.5)),
-    []
-  );
+  // Shuffle deck on mount
+  useEffect(() => {
+    setShuffledCards((prev) => [...prev].sort(() => Math.random() - 0.5));
+  }, []);
 
   const handleClick = (card: TCard) => {
-    if (!drawnCard) {
-      localStorage.setItem("card", JSON.stringify(card));
-      setSlideOut(card);
+    if (drawnCard) return;
 
-      setTimeout(() => {
-        setDrawnCard(card);
-        setTimeout(() => setIsFlipped(true), 50);
-      }, 1000);
-    }
+    localStorage.setItem("card", JSON.stringify(card));
+    setSlideOut(card);
+
+    // Animate: slide → reveal → flip
+    setTimeout(() => {
+      setDrawnCard(card);
+      setTimeout(() => setIsFlipped(true), 50);
+    }, 1000);
   };
+
+  // Renders a spread of cards (desktop version)
+  const renderSpread = (
+    cards: TCard[],
+    total: number,
+    spreadAngle: number,
+    isSmall = false
+  ) =>
+    cards.map((card, index) => {
+      const middle = (total - 1) / 2;
+      const rotation = (index - middle) * spreadAngle;
+      const distance = Math.abs(index - middle);
+      const curveHeight = Math.pow(distance, 2) * 6;
+
+      let className = `card-wrapper${isSmall ? " small" : ""}`;
+      if (slideOut && card.id !== slideOut.id) className += " fade-out";
+
+      let styles: React.CSSProperties = {
+        transform:
+          slideOut && card.id === slideOut.id
+            ? `translateY(-20px)${isSmall ? " scale(0.7)" : ""}`
+            : `rotate(${rotation}deg) translateY(${curveHeight}px)`,
+      };
+
+      if (slideOut && card.id === slideOut.id) {
+        className += " hide";
+        styles.transition = "transform 0.8s ease";
+      }
+
+      if (drawnCard && card.id === drawnCard.id) {
+        styles.transform = `rotateY(180deg)${isSmall ? " scale(0.7)" : ""}`;
+      }
+
+      return (
+        <div
+          key={card.id}
+          className={className}
+          style={styles}
+          onClick={() => handleClick(card)}
+        >
+          <div className="card-face card-back"></div>
+        </div>
+      );
+    });
 
   return (
     <div className="tarot-container">
@@ -40,40 +85,44 @@ export default function TarotCards({ card }: { card?: TCard }): JSX.Element {
         {drawnCard ? "The spirits have spoken." : "Choose wisely"}
       </h1>
       <p className="subtitle">The truth stands before you.</p>
+
       {drawnCard && (
         <div className={`selected-card ${isFlipped ? "flipped" : ""}`}>
-          <div className="card-face card-back"></div>
-          <div className="card-face card-front" onClick={() => setFlip(!flip)}>
-            <span>
-              <div className={`images${flip ? " flipped" : ""}`}>
-                <div className="front">
-                  <img src={drawnCard.image} alt={drawnCard.name} />
-                  <p className="meaning">Meaning: {drawnCard.meaning}</p>
-                </div>
-
-                <div className="back">
-                  <p className="meaning">Rejoice!</p>
-                </div>
+          <div className="card-face card-back" />
+          <div
+            className="card-face card-front"
+            onClick={() => setFlipImage(!flipImage)}
+          >
+            <div className={`images${flipImage ? " flipped" : ""}`}>
+              <div className="front">
+                <img src={drawnCard.image} alt={drawnCard.name} />
+                <p className="meaning">Meaning: {drawnCard.meaning}</p>
               </div>
-            </span>
-            <span>
+              <div className="back">
+                <p className="meaning">Rejoice!</p>
+              </div>
+            </div>
+
+            <div>
               <p className="left title">{drawnCard.name}</p>
               <p className="left">{drawnCard.reading}</p>
-            </span>
+            </div>
           </div>
         </div>
       )}
 
+      {/* Mobile deck */}
       <div className={`deck mobile${drawnCard ? " hide" : ""}`}>
         {shuffledCards.map((card) => {
           let className = "card-wrapper";
           if (slideOut && card.id !== slideOut.id) className += " fade-out";
           if (slideOut && card.id === slideOut.id) className += " hide";
+
           return (
             <div
               key={card.id}
               className={className}
-              onClick={() => !drawnCard && handleClick(card)}
+              onClick={() => handleClick(card)}
             >
               <div className="card-face card-back"></div>
             </div>
@@ -81,88 +130,12 @@ export default function TarotCards({ card }: { card?: TCard }): JSX.Element {
         })}
       </div>
 
+      {/* Desktop spreads */}
       <div className="deck desktop">
-        {shuffledCards.slice(0, 13).map((card, index) => {
-          const total = 13;
-          const middle = (total - 1) / 2;
-          const spreadAngle = 6;
-
-          const rotation = (index - middle) * spreadAngle;
-          const distanceFromCenter = Math.abs(index - middle);
-          const curveHeight = Math.pow(distanceFromCenter, 2) * 6;
-
-          let className = "card-wrapper";
-          if (slideOut && card.id !== slideOut.id) className += " fade-out";
-
-          let styles: React.CSSProperties = {
-            transform:
-              slideOut && card.id === slideOut.id
-                ? "translateY(-20px)"
-                : `rotate(${rotation}deg) translateY(${curveHeight}px)`,
-          };
-
-          if (slideOut && card.id === slideOut.id) {
-            className += " hide";
-            styles = { ...styles, transition: "transform 0.8s ease" };
-          }
-
-          if (drawnCard && card.id === drawnCard.id) {
-            styles = { ...styles, transform: "rotateY(180deg)" };
-          }
-
-          return (
-            <div
-              key={card.id}
-              className={className}
-              style={styles}
-              onClick={() => !drawnCard && handleClick(card)}
-            >
-              <div className="card-face card-back"></div>
-            </div>
-          );
-        })}
+        {renderSpread(shuffledCards.slice(0, 13), 13, 6)}
       </div>
-
       <div className="deck desktop">
-        {shuffledCards.slice(13, 22).map((card, index) => {
-          const total = 9;
-          const middle = (total - 1) / 2;
-          const spreadAngle = 8;
-
-          const rotation = (index - middle) * spreadAngle;
-          const distanceFromCenter = Math.abs(index - middle);
-          const curveHeight = Math.pow(distanceFromCenter, 2) * 6;
-
-          let className = "card-wrapper small";
-          if (slideOut && card.id !== slideOut.id) className += " fade-out";
-
-          let styles: React.CSSProperties = {
-            transform:
-              slideOut && card.id === slideOut.id
-                ? "translateY(-20px) scale(0.7)"
-                : `rotate(${rotation}deg) translateY(${curveHeight}px)`,
-          };
-
-          if (slideOut && card.id === slideOut.id) {
-            className += " hide";
-            styles = { ...styles, transition: "transform 0.8s ease" };
-          }
-
-          if (drawnCard && card.id === drawnCard.id) {
-            styles = { ...styles, transform: "rotateY(180deg) scale(0.7)" };
-          }
-
-          return (
-            <div
-              key={card.id}
-              className={className}
-              style={styles}
-              onClick={() => !drawnCard && handleClick(card)}
-            >
-              <div className="card-face card-back"></div>
-            </div>
-          );
-        })}
+        {renderSpread(shuffledCards.slice(13, 22), 9, 8, true)}
       </div>
     </div>
   );
