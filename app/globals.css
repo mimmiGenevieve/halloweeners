@@ -173,9 +173,44 @@ p {
 
   .card-front {
     transform: rotateY(180deg);
-    img {
+
+    .images {
       width: 300px;
+      height: 600px;
       border-radius: 6px;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+
+      &:hover,
+      &.flipped {
+        transform: rotateY(180deg);
+      }
+
+      .front,
+      .back {
+        backface-visibility: hidden;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: inherit;
+        height: inherit;
+
+        img {
+          width: 100%;
+          border-radius: 20px;
+        }
+      }
+
+      .back {
+        background: #1e1b1b;
+        transform: rotateY(180deg);
+        background-image: url("cards/card-back.jpg");
+        background-size: contain;
+        background-repeat: no-repeat;
+        .meaning {
+          padding-top: 500px;
+        }
+      }
     }
   }
 

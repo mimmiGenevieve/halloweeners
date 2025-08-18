@@ -15,6 +15,7 @@ export default function TarotCards({ card }: { card?: TCard }): JSX.Element {
   const [isFlipped, setIsFlipped] = useState(card ? true : false);
   const [slideOut, setSlideOut] = useState<TCard | null>(card ?? null);
   const [shuffledCards, setShuffledCards] = useState(cards);
+  const [flip, setFlip] = useState(false);
 
   useEffect(
     () => setShuffledCards((prev) => [...prev].sort(() => Math.random() - 0.5)),
@@ -39,14 +40,21 @@ export default function TarotCards({ card }: { card?: TCard }): JSX.Element {
         {drawnCard ? "The spirits have spoken." : "Choose wisely"}
       </h1>
       <p className="subtitle">The truth stands before you.</p>
-
       {drawnCard && (
         <div className={`selected-card ${isFlipped ? "flipped" : ""}`}>
           <div className="card-face card-back"></div>
-          <div className="card-face card-front">
+          <div className="card-face card-front" onClick={() => setFlip(!flip)}>
             <span>
-              <img src={drawnCard.image} alt={drawnCard.name} />
-              <p className="meaning">Meaning: {drawnCard.meaning}</p>
+              <div className={`images${flip ? " flipped" : ""}`}>
+                <div className="front">
+                  <img src={drawnCard.image} alt={drawnCard.name} />
+                  <p className="meaning">Meaning: {drawnCard.meaning}</p>
+                </div>
+
+                <div className="back">
+                  <p className="meaning">Rejoice!</p>
+                </div>
+              </div>
             </span>
             <span>
               <p className="left title">{drawnCard.name}</p>
