@@ -205,11 +205,11 @@ p {
       .back {
         background: #1e1b1b;
         transform: rotateY(180deg);
-        background-image: url("cards/card-back.jpg");
+        background-image: url("cards/image.png");
         background-size: contain;
         background-repeat: no-repeat;
         .meaning {
-          padding-top: 500px;
+          padding-top: 520px;
         }
       }
     }
