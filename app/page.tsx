@@ -22,21 +22,21 @@ export default function Home(): JSX.Element {
       const urlParams = new URLSearchParams(window.location.search);
       const urlPassword = urlParams.get("password");
 
-      setTimeout(() => {
-        const storedLogin = localStorage.getItem("loggedIn");
-        if (urlPassword === CORRECT_PASSWORD) {
-          setLoggedIn(true);
-          localStorage.setItem("loggedIn", "true");
-          const newUrl = new URL(window.location.href);
-          newUrl.searchParams.delete("password");
-          window.history.replaceState({}, document.title, newUrl.toString());
-        } else if (storedLogin === "true") {
-          setLoggedIn(true);
-        }
-
-        setLoading(false);
-      }, 800);
+      const storedLogin = localStorage.getItem("loggedIn");
+      if (urlPassword === CORRECT_PASSWORD) {
+        setLoggedIn(true);
+        localStorage.setItem("loggedIn", "true");
+        const newUrl = new URL(window.location.href);
+        newUrl.searchParams.delete("password");
+        window.history.replaceState({}, document.title, newUrl.toString());
+      } else if (storedLogin === "true") {
+        setLoggedIn(true);
+      }
     }
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
   }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
