@@ -35,6 +35,10 @@ export default function TarotCards({ card }: { card?: TCard }): JSX.Element {
     }, 1000);
   };
 
+  useEffect(() => {
+    if (drawnCard) setTimeout(() => setFlipImage(true), 10000);
+  }, [drawnCard]);
+
   // Renders a spread of cards (desktop version)
   const renderSpread = (
     cards: TCard[],
