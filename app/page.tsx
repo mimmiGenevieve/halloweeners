@@ -16,26 +16,28 @@ export default function Home(): JSX.Element {
     setLoadingMessage(randomMsg);
 
     const cardInStorage = localStorage.getItem("card");
+    const storedLogin = localStorage.getItem("loggedIn");
 
-    if (cardInStorage) setStoredCard(JSON.parse(cardInStorage));
+    if (cardInStorage && storedLogin === "true") {
+      setStoredCard(JSON.parse(cardInStorage));
+      setLoggedIn(true);
+    } else if (storedLogin === "true") setLoggedIn(true);
     else {
       const urlParams = new URLSearchParams(window.location.search);
       const urlPassword = urlParams.get("password");
 
-      const storedLogin = localStorage.getItem("loggedIn");
       if (urlPassword === CORRECT_PASSWORD) {
         setLoggedIn(true);
         localStorage.setItem("loggedIn", "true");
-        const newUrl = new URL(window.location.href);
-        newUrl.searchParams.delete("password");
-        window.history.replaceState({}, document.title, newUrl.toString());
-      } else if (storedLogin === "true") {
-        setLoggedIn(true);
       }
     }
 
     setTimeout(() => {
       setLoading(false);
+
+      const newUrl = new URL(window.location.href);
+      newUrl.searchParams.delete("password");
+      window.history.replaceState({}, document.title, newUrl.toString());
     }, 1000);
   }, []);
 
