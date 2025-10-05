@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "The Halloweeners",
-  description: "Simple tarot app for the Halloweeners",
+  description: "The truth will be revealed",
 };
 
 export default function RootLayout({
