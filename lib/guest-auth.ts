@@ -3,13 +3,20 @@ import { cookies } from 'next/headers'
 
 export const INVITE_COOKIE_NAME = 'invite_token'
 
-type GuestLookupRow = { token: string }
+export type GuestLookupRow = { id: number; token: string; name: string }
+
+export type RsvpData = {
+    email?: string
+    bringing_plus_one?: boolean
+    plus_one_name?: string | null
+    cipher_answer?: string | null
+}
 
 const guestLookupQueries = [
     (token: string) =>
         sql`
-            SELECT token
-            FROM guests_table
+            SELECT id, token, name
+            FROM guests
             WHERE token = ${token}
             LIMIT 1
         `,
@@ -58,23 +65,23 @@ async function findGuestByToken(token: string): Promise<GuestLookupRow | null> {
 
 export async function isValidGuestToken(
     rawToken: string | null | undefined
-): Promise<boolean> {
+): Promise<GuestLookupRow | null> {
     const token = normalizeToken(rawToken)
 
     if (!token || token.length > 200) {
-        return false
+        return null
     }
 
     try {
         const guest = await findGuestByToken(token)
-        return guest !== null
+        return guest
     } catch (error) {
         console.error('Guest token validation failed:', error)
-        return false
+        return null
     }
 }
 
-export async function getAuthenticatedGuestToken(): Promise<string | null> {
+export async function getAuthenticatedGuestToken(): Promise<GuestLookupRow | null> {
     const cookieStore = await cookies()
     const token = normalizeToken(cookieStore.get(INVITE_COOKIE_NAME)?.value)
 
@@ -82,8 +89,30 @@ export async function getAuthenticatedGuestToken(): Promise<string | null> {
         return null
     }
 
-    const isValid = await isValidGuestToken(token)
-    return isValid ? token : null
+    const user = await isValidGuestToken(token)
+    return user
+}
+
+export async function fetchGuestRsvpData(
+    guestId: number | null
+): Promise<RsvpData | null> {
+    if (!guestId) {
+        return null
+    }
+
+    try {
+        const result = await sql`
+            SELECT email, bringing_plus_one, plus_one_name, cipher_answer
+            FROM rsvps
+            WHERE guest_id = ${guestId}
+            LIMIT 1
+        `
+        const [row] = result as RsvpData[]
+        return row || null
+    } catch (error) {
+        console.error('Failed to fetch RSVP data:', error)
+        return null
+    }
 }
 
 export function normalizeNextPath(
