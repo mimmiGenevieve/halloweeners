@@ -34,30 +34,3 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-## Neon Quickstart
-
-This project already includes the Neon serverless driver.
-
-1. Create a local environment file from the template:
-
-```bash
-cp .env.example .env.local
-```
-
-2. Set `DATABASE_URL` in `.env.local`.
-
-3. Run the dev server:
-
-```bash
-npm run dev
-```
-
-4. Verify Neon connectivity:
-
-```bash
-curl http://localhost:3000/api/neon
-```
-
-The route returns basic connection details if your database credentials are valid.
-
