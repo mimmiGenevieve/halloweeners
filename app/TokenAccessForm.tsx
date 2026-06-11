@@ -42,7 +42,7 @@ export default function TokenAccessForm({
     }
 
     return (
-        <form className="flex flex-col  w-full">
+        <form onSubmit={handleSubmit} className="flex flex-col  w-full">
             <p className="text-6xl mt-4 font-bold moontime mb-4 text-center">
                 Enter Your Token
             </p>
@@ -54,6 +54,7 @@ export default function TokenAccessForm({
                 placeholder="Invitation token"
                 className={`${hasError ? 'border-red-300' : 'border-(--foreground)'} border-2 py-2 px-4 rounded`}
                 autoComplete="off"
+                maxLength={200}
                 value={formData.token}
                 onChange={(e) => {
                     setFormData({ ...formData, token: e.target.value })
@@ -71,7 +72,6 @@ export default function TokenAccessForm({
                 type="submit"
                 className="bg-(--foreground) text-(--background) py-2 px-4 rounded mt-10 w-max self-center "
                 disabled={loading}
-                onClick={() => handleSubmit}
             >
                 {loading ? 'Entering...' : 'Enter'}
             </button>

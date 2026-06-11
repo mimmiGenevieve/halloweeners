@@ -4,11 +4,30 @@ import { sql } from '@/lib/neon'
 import { revalidatePath } from 'next/cache'
 import { getAuthenticatedGuestToken } from '@/lib/guest-auth'
 
-type RsvpFormData = {
-    email: string
-    bringing_companion: boolean
-    companion_name: string
-    cipher_answer: string
+const EMAIL_MAX_LENGTH = 320
+const NAME_MAX_LENGTH = 120
+const CIPHER_MAX_LENGTH = 250
+
+function readTextField(
+    formData: FormData,
+    key: string,
+    maxLength: number
+): string {
+    const value = formData.get(key)
+    if (typeof value !== 'string') {
+        return ''
+    }
+
+    return value.trim().slice(0, maxLength)
+}
+
+function readBooleanField(formData: FormData, key: string): boolean {
+    const value = formData.get(key)
+    return value === 'true'
+}
+
+function isValidEmail(email: string): boolean {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }
 
 export async function submitRsvp(formData: FormData) {
@@ -18,13 +37,25 @@ export async function submitRsvp(formData: FormData) {
         throw new Error('Not authenticated')
     }
 
-    const email = formData.get('email') as string
-    const bringingCompanion = formData.get('bringingCompanion') === 'true'
-    const companionName = formData.get('companionName') as string
-    const cipherAnswer = formData.get('cipherAnswer') as string
+    const email = readTextField(formData, 'email', EMAIL_MAX_LENGTH)
+    const bringingCompanion = readBooleanField(formData, 'bringingCompanion')
+    const companionName = readTextField(
+        formData,
+        'companionName',
+        NAME_MAX_LENGTH
+    )
+    const cipherAnswer = readTextField(
+        formData,
+        'cipherAnswer',
+        CIPHER_MAX_LENGTH
+    )
 
     if (!email) {
         throw new Error('Email is required')
+    }
+
+    if (!isValidEmail(email)) {
+        throw new Error('Invalid email format')
     }
 
     try {
