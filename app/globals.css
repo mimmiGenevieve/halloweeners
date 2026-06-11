@@ -43,3 +43,11 @@ h6,
 .moontime {
     font-family: moontime, serif;
 }
+
+button {
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: default;
+}
