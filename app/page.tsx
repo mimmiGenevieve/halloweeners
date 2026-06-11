@@ -1,16 +1,38 @@
 import InvitationShell from './InvitationShell'
+import TokenAccessForm from './TokenAccessForm'
+import { getAuthenticatedGuestToken } from '@/lib/guest-auth'
+import { redirect } from 'next/navigation'
 
-export default function Home() {
+type HomePageProps = {
+    searchParams: Promise<{
+        token?: string
+        authError?: string
+    }>
+}
+
+export default async function Home({ searchParams }: HomePageProps) {
+    const { token, authError } = await searchParams
+
+    if (token) {
+        redirect(`/auth/token?token=${encodeURIComponent(token)}&next=/`)
+    }
+
+    const authenticatedToken = await getAuthenticatedGuestToken()
+
     return (
-        <InvitationShell activePage="details">
+        <InvitationShell
+            activePage="details"
+            isAuthenticated={!!authenticatedToken}
+            authError={authError}
+        >
             <p className="text-7xl mt-4 font-bold moontime mb-10 text-center">
                 Essential Details for the Night
             </p>
 
-            <p>
-                <div>Date: October 31st, 2026.</div>
-                <div>Time: 6:00 PM to late</div>
-                <div>
+            <div className="flex flex-col">
+                <span>Date: October 31st, 2026.</span>
+                <span>Time: 6:00 PM to late</span>
+                <span>
                     Location: Kungsportsavenyen 1, 411 36 Göteborg.{' '}
                     <a
                         href="https://maps.app.goo.gl/m4Aqvqb6J3yeMaKKA"
@@ -20,12 +42,12 @@ export default function Home() {
                     >
                         Directions.
                     </a>
-                </div>
+                </span>
                 <i>
                     Upon your arrival, call <b>Twoday</b> on the intercom to be
                     granted entry.
                 </i>
-            </p>
+            </div>
             <p className="mt-7">
                 <b>Bring your own elixir of choice</b>, though light snacks will
                 be provided.
