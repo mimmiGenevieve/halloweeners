@@ -1,5 +1,4 @@
 import InvitationShell from '../InvitationShell'
-import TokenAccessForm from '../TokenAccessForm'
 import RsvpForm from './RsvpForm'
 import {
     getAuthenticatedGuestToken,
@@ -34,11 +33,13 @@ export default async function RSVPPage({ searchParams }: RSVPPageProps) {
             authError={authError}
             isAuthenticated={!!authenticatedUser}
         >
-            <p className="text-7xl mt-4 font-bold moontime mb-5 text-center">
+            <p className="lg:text-7xl text-5xl mt-4 font-bold moontime mb-5 text-center">
                 Registration to attend
             </p>
-            <p className="italic text-center mb-8">
-                The spirits require your answer no later than October 28th.
+            <p className="italic text-center mb-8 whitespace-pre">
+                {existingRsvp
+                    ? 'The spirits already hold your name.\nYou may revise your fate below until October 28th.'
+                    : 'The spirits require your answer no later than October 28th.'}
             </p>
             <RsvpForm user={authenticatedUser} existingRsvp={existingRsvp} />
         </InvitationShell>

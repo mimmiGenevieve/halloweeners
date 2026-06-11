@@ -1,5 +1,4 @@
 import InvitationShell from './InvitationShell'
-import TokenAccessForm from './TokenAccessForm'
 import { getAuthenticatedGuestToken } from '@/lib/guest-auth'
 import { redirect } from 'next/navigation'
 
@@ -25,7 +24,7 @@ export default async function Home({ searchParams }: HomePageProps) {
             isAuthenticated={!!authenticatedToken}
             authError={authError}
         >
-            <p className="text-7xl mt-4 font-bold moontime mb-10 text-center">
+            <p className="lg:text-7xl text-5xl mt-4 font-bold moontime mb-10 text-center">
                 Essential Details for the Night
             </p>
 

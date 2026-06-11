@@ -145,7 +145,7 @@ export default function RsvpForm({ user, existingRsvp }: RsvpFormProps) {
             <button
                 type="submit"
                 disabled={isSubmitting || !hasEdited}
-                className="bg-(--foreground) text-(--background) py-2 px-4 rounded mt-4 w-max self-center cursor-pointer disabled:opacity-50"
+                className="bg-(--foreground) text-(--background) py-2 px-4 rounded mt-4 w-max self-center disabled:opacity-50"
             >
                 {isSubmitting ? 'Submitting...' : 'Submit'}
             </button>
