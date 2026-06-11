@@ -38,8 +38,9 @@ export default function InvitationShell({
                         </Link>
                     </div>
                 </div>
-
-                {children}
+                <div className="flex flex-col bg-(--background)/60 p-[50px] mt-30 gap-2 text-xl w-200 h-170 overflow-y-auto no-scrollbar">
+                    {children}
+                </div>
             </main>
         </div>
     )
