@@ -5,27 +5,11 @@ export const INVITE_COOKIE_NAME = 'invite_token'
 
 type GuestLookupRow = { token: string }
 
-type GuestLookupQuery = (token: string) => Promise<GuestLookupRow[]>
-
-const guestLookupQueries: GuestLookupQuery[] = [
-    (token) =>
-        sql<GuestLookupRow[]>`
+const guestLookupQueries = [
+    (token: string) =>
+        sql`
             SELECT token
             FROM guests_table
-            WHERE token = ${token}
-            LIMIT 1
-        `,
-    (token) =>
-        sql<GuestLookupRow[]>`
-            SELECT token
-            FROM "guests-table"
-            WHERE token = ${token}
-            LIMIT 1
-        `,
-    (token) =>
-        sql<GuestLookupRow[]>`
-            SELECT token
-            FROM guests
             WHERE token = ${token}
             LIMIT 1
         `,
@@ -48,7 +32,8 @@ async function findGuestByToken(token: string): Promise<GuestLookupRow | null> {
 
     for (const query of guestLookupQueries) {
         try {
-            const [row] = await query(token)
+            const result = await query(token)
+            const [row] = result as GuestLookupRow[]
             if (row) {
                 return row
             }
