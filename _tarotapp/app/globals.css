@@ -5,6 +5,7 @@
 }
 
 body {
+  background-size: cover;
   background-color: #1e1b1b;
   color: #988787;
   font-family: "Garamond", serif;
