@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import TokenAccessForm from './TokenAccessForm'
+import { GuestLookupRow } from '@/lib/guest-auth'
 
 type InvitationShellProps = {
     activePage: 'details' | 'rsvp'
