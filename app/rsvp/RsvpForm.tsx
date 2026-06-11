@@ -80,6 +80,7 @@ export default function RsvpForm({ user, existingRsvp }: RsvpFormProps) {
                 placeholder="Email"
                 type="email"
                 id="email"
+                maxLength={320}
                 value={formData.email}
                 onChange={(e) => handleFormUpdate('email', e.target.value)}
                 required
@@ -121,6 +122,7 @@ export default function RsvpForm({ user, existingRsvp }: RsvpFormProps) {
                     <input
                         className="border-(--foreground) border-2 py-2 px-4 rounded w-full"
                         placeholder="Kindly share the name of your companion"
+                        maxLength={120}
                         value={formData.companionName}
                         onChange={(e) =>
                             handleFormUpdate('companionName', e.target.value)
@@ -135,6 +137,7 @@ export default function RsvpForm({ user, existingRsvp }: RsvpFormProps) {
                 <input
                     className="border-(--foreground) border-2 py-2 px-4 rounded w-full"
                     placeholder="The spirits bid your answer"
+                    maxLength={250}
                     value={formData.cipherAnswer}
                     onChange={(e) =>
                         handleFormUpdate('cipherAnswer', e.target.value)

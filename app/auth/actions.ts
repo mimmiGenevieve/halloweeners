@@ -6,6 +6,7 @@ import {
     INVITE_COOKIE_NAME,
     isValidGuestToken,
     normalizeNextPath,
+    sanitizeInviteToken,
     withAuthError,
 } from '@/lib/guest-auth'
 
@@ -15,13 +16,15 @@ export async function authenticateGuestToken(formData: FormData) {
     const tokenValue = formData.get('token')
     const nextPathValue = formData.get('nextPath')
 
-    const token = typeof tokenValue === 'string' ? tokenValue : ''
+    const token = sanitizeInviteToken(
+        typeof tokenValue === 'string' ? tokenValue : ''
+    )
     const nextPath = normalizeNextPath(
         typeof nextPathValue === 'string' ? nextPathValue : '',
         '/'
     )
 
-    const isValid = await isValidGuestToken(token)
+    const isValid = token ? await isValidGuestToken(token) : null
 
     if (!isValid) {
         redirect(withAuthError(nextPath, 'invalid_token'))
@@ -30,7 +33,7 @@ export async function authenticateGuestToken(formData: FormData) {
     const cookieStore = await cookies()
     cookieStore.set({
         name: INVITE_COOKIE_NAME,
-        value: token.trim(),
+        value: token!,
         httpOnly: true,
         sameSite: 'lax',
         secure: process.env.NODE_ENV === 'production',

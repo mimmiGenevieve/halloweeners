@@ -12,6 +12,9 @@ export type RsvpData = {
     cipher_answer?: string | null
 }
 
+const TOKEN_MAX_LENGTH = 200
+const TOKEN_ALLOWED_PATTERN = /^[a-zA-Z-]+$/
+
 const guestLookupQueries = [
     (token: string) =>
         sql`
@@ -22,8 +25,24 @@ const guestLookupQueries = [
         `,
 ]
 
-function normalizeToken(rawToken: string | null | undefined): string {
+export function normalizeToken(rawToken: string | null | undefined): string {
     return (rawToken ?? '').trim()
+}
+
+export function sanitizeInviteToken(
+    rawToken: string | null | undefined
+): string | null {
+    const token = normalizeToken(rawToken)
+
+    if (!token || token.length > TOKEN_MAX_LENGTH) {
+        return null
+    }
+
+    if (!TOKEN_ALLOWED_PATTERN.test(token)) {
+        return null
+    }
+
+    return token
 }
 
 function isMissingRelationError(error: unknown): boolean {
@@ -66,9 +85,9 @@ async function findGuestByToken(token: string): Promise<GuestLookupRow | null> {
 export async function isValidGuestToken(
     rawToken: string | null | undefined
 ): Promise<GuestLookupRow | null> {
-    const token = normalizeToken(rawToken)
+    const token = sanitizeInviteToken(rawToken)
 
-    if (!token || token.length > 200) {
+    if (!token) {
         return null
     }
 
