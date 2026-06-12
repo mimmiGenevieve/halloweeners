@@ -4,20 +4,20 @@ import { getAuthenticatedGuestToken, isGuestAdmin } from '@/lib/guest-auth'
 import {
     fetchGuestsForAdminForm,
     fetchPrizesForAdminForm,
+    fetchSignedUpGuestsForAdminPage,
     fetchWinnersByYear,
     getPreviousYear,
 } from '@/lib/winners'
-import WinnersAdminForm from './WinnersAdminForm'
+import WinnersRegistry from './winnersRegistry'
 
 type AdminPageProps = {
     searchParams: Promise<{
         token?: string
-        authError?: string
     }>
 }
 
 export default async function AdminPage({ searchParams }: AdminPageProps) {
-    const { token, authError } = await searchParams
+    const { token } = await searchParams
 
     if (token) {
         redirect(
@@ -28,35 +28,19 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
     const user = await getAuthenticatedGuestToken()
     const isAdmin = isGuestAdmin(user)
 
-    if (user && !isAdmin) {
-        redirect('/rsvp')
-    }
-
-    if (!user) {
-        return (
-            <InvitationShell
-                activePage="admin"
-                isAuthenticated={false}
-                authError={authError}
-            >
-                <p className="lg:text-7xl text-5xl mt-4 font-bold moontime mb-5 text-center">
-                    Winners Registry
-                </p>
-                <p className="italic text-center mb-8">
-                    Enter your token to access the registry.
-                </p>
-            </InvitationShell>
-        )
+    if ((user && !isAdmin) || !user) {
+        redirect('/')
     }
 
     const previousYear = getPreviousYear()
-    const currentYear = new Date().getFullYear()
 
-    const [guests, prizes, previousYearWinners] = await Promise.all([
-        fetchGuestsForAdminForm(),
-        fetchPrizesForAdminForm(),
-        fetchWinnersByYear(previousYear),
-    ])
+    const [guests, signedUpGuests, prizes, previousYearWinners] =
+        await Promise.all([
+            fetchGuestsForAdminForm(),
+            fetchSignedUpGuestsForAdminPage(),
+            fetchPrizesForAdminForm(),
+            fetchWinnersByYear(previousYear),
+        ])
 
     return (
         <InvitationShell
@@ -65,50 +49,58 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             isAdmin={isAdmin}
         >
             <p className="lg:text-7xl text-5xl mt-4 font-bold moontime mb-5 text-center">
-                Winners Registry
-            </p>
-            <p className="text-center mb-8">
-                Review {previousYear} winners and register the chosen souls for{' '}
-                {currentYear}.
+                Signed up Guests
             </p>
 
-            <h2 className="text-6xl mb-3">Winners of the last gathering</h2>
-            {previousYearWinners.length > 0 ? (
-                <div className="overflow-x-auto border border-(--foreground)/20 rounded">
-                    <table className="w-full text-left border-collapse">
-                        <thead>
-                            <tr className="border-b border-(--foreground)/20">
-                                <th className="p-3">Guest</th>
-                                <th className="p-3">Prize</th>
-                                <th className="p-3">Notes</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {previousYearWinners.map((winner) => (
-                                <tr
-                                    key={winner.guest_id}
-                                    className="border-b last:border-b-0 border-(--foreground)/10"
-                                >
-                                    <td className="p-3">{winner.guest_name}</td>
-                                    <td className="p-3">{winner.prize_name}</td>
-                                    <td className="p-3">
-                                        {winner.notes || '-'}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+            <p className="text-center mb-8">
+                {signedUpGuests.length +
+                    signedUpGuests.filter((guest) => guest.bringing_plus_one)
+                        .length}{' '}
+                souls (
+                {
+                    signedUpGuests.filter((guest) => guest.bringing_plus_one)
+                        .length
+                }{' '}
+                plus one
+                {signedUpGuests.filter((guest) => guest.bringing_plus_one)
+                    .length > 1
+                    ? 's'
+                    : ''}
+                ) have pledged to attend the gathering.
+            </p>
+
+            {signedUpGuests.length > 0 ? (
+                <div
+                    className="overflow-x-auto 
+                 rounded"
+                >
+                    <ul className="space-y-2 list-disc list-inside">
+                        {signedUpGuests.map((guest) => (
+                            <li key={guest.id}>
+                                <strong>{guest.name}</strong> ({guest.email})
+                                <ul className="pl-5">
+                                    {guest.bringing_plus_one && (
+                                        <li>Bringing: {guest.plus_one_name}</li>
+                                    )}
+                                    {guest.cipher_answer && (
+                                        <li>
+                                            Cipher answer: {guest.cipher_answer}
+                                        </li>
+                                    )}
+                                </ul>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
             ) : (
                 <p>No winners recorded for {previousYear}.</p>
             )}
 
-            <h2 className="text-6xl mt-15">Add this years winners</h2>
-
-            <WinnersAdminForm
+            <WinnersRegistry
                 guests={guests}
                 prizes={prizes}
-                currentYear={currentYear}
+                previousYearWinners={previousYearWinners}
+                previousYear={previousYear}
             />
         </InvitationShell>
     )

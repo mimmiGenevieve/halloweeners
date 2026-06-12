@@ -35,9 +35,11 @@ export default function TokenAccessForm({
             await authenticateGuestToken(formDataObj)
         } catch (error) {
             console.error('RSVP submission failed:', error)
-            setHasError(true)
-        } finally {
-            setIsLoading(false)
+
+            if (error === 'invalid_token') {
+                setHasError(true)
+                setIsLoading(false)
+            }
         }
     }
 
