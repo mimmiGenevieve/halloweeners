@@ -1,5 +1,6 @@
 import InvitationShell from './InvitationShell'
-import { getAuthenticatedGuestToken } from '@/lib/guest-auth'
+import { getAuthenticatedGuestToken, isGuestAdmin } from '@/lib/guest-auth'
+import { fetchGuestPreviousYearPrizes, getPreviousYear } from '@/lib/winners'
 import { redirect } from 'next/navigation'
 
 type HomePageProps = {
@@ -17,14 +18,51 @@ export default async function Home({ searchParams }: HomePageProps) {
     }
 
     const authenticatedToken = await getAuthenticatedGuestToken()
+    const isAdmin = isGuestAdmin(authenticatedToken)
+
+    const previousYear = getPreviousYear()
+    const previousYearPrizes = authenticatedToken
+        ? await fetchGuestPreviousYearPrizes(
+              authenticatedToken.id,
+              previousYear
+          )
+        : []
 
     return (
         <InvitationShell
             activePage="details"
             isAuthenticated={!!authenticatedToken}
+            isAdmin={isAdmin}
             authError={authError}
         >
-            <p className="lg:text-7xl text-5xl mt-4 font-bold moontime mb-10 text-center">
+            {previousYearPrizes.length > 0 && (
+                <div className="border border-fuchsia-300/50 bg-fuchsia-300/10 rounded p-4 mb-8 text-left flex flex-col gap-4">
+                    <p className="moontime lg:text-7xl text-5xl text-center">
+                        Honored champion of last year
+                    </p>
+                    <p>
+                        Your triumph at last year's gathering has not been
+                        forgotten. As the reigning master of{' '}
+                        <span className="font-bold">
+                            {previousYearPrizes.join(', ')}
+                        </span>
+                        , your legacy is secure—but your reign must end, for a
+                        new master shall be crowned this year.
+                    </p>
+
+                    <p>
+                        Return bearing the prize you once claimed, that it may
+                        be transferred with honor during the night's ceremony.
+                    </p>
+                    <p className="font-bold ">
+                        Should the fates conspire against your attendance,
+                        arrange for another worthy specter to carry out this
+                        sacred duty in your stead.
+                    </p>
+                </div>
+            )}
+
+            <p className="lg:text-7xl text-5xl mt-10 font-bold moontime mb-4 text-center">
                 Essential Details for the Night
             </p>
 

@@ -83,8 +83,13 @@ export default function RsvpForm({ user, existingRsvp }: RsvpFormProps) {
                 maxLength={320}
                 value={formData.email}
                 onChange={(e) => handleFormUpdate('email', e.target.value)}
-                required
             />
+            <span className="text-xs italic opacity-70 -mt-2">
+                Used only to send your confirmation and/or any updates to the
+                details of the party. If you prefer not to share your email, the
+                spirits will accept your answer without it-they have other means
+                of contacting you, anyway.
+            </span>
             <div className="flex flex-col ">
                 <div className="flex gap-2">
                     Will you be accompanied by another soul?{' '}
