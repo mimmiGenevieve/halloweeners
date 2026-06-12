@@ -50,11 +50,11 @@ export default function InvitationShell({
                     )}
                 </div>
                 {isAuthenticated ? (
-                    <div className="flex flex-col bg-(--background)/60 p-[50px] mt-10 lg:mt-20 gap-2 text-xl w-(100%) lg:w-200 overflow-y-auto no-scrollbar">
+                    <div className="flex flex-col bg-(--background)/60 p-[50px] mt-10 lg:mt-20 gap-2 text-xl w-full lg:w-200  overflow-y-auto no-scrollbar">
                         {children}
                     </div>
                 ) : (
-                    <div className="flex flex-col bg-(--background)/60 p-[50px] mt-10 lg:mt-20 gap-2 text-xl w-(100%) lg:w-200 lg:h-110 overflow-y-auto no-scrollbar">
+                    <div className="flex flex-col bg-(--background)/60 p-[50px] mt-10 lg:mt-20 gap-2 text-xl w-full lg:w-200 lg:h-110 overflow-y-auto no-scrollbar">
                         <TokenAccessForm
                             nextPath={`/${pathPrefix}`}
                             authError={authError}
