@@ -3,7 +3,12 @@ import { cookies } from 'next/headers'
 
 export const INVITE_COOKIE_NAME = 'invite_token'
 
-export type GuestLookupRow = { id: number; token: string; name: string }
+export type GuestLookupRow = {
+    id: string
+    token: string
+    name: string
+    is_admin?: boolean | null
+}
 
 export type RsvpData = {
     email?: string
@@ -14,11 +19,29 @@ export type RsvpData = {
 
 const TOKEN_MAX_LENGTH = 200
 const TOKEN_ALLOWED_PATTERN = /^[a-zA-Z-]+$/
+const ADMIN_TOKENS_ENV = 'ADMIN_GUEST_TOKENS'
+
+function parseAdminTokensFromEnv(raw: string | undefined): Set<string> {
+    if (!raw) {
+        return new Set()
+    }
+
+    return new Set(
+        raw
+            .split(',')
+            .map((value) => value.trim())
+            .filter(Boolean)
+    )
+}
+
+const adminTokenAllowList = parseAdminTokensFromEnv(
+    process.env[ADMIN_TOKENS_ENV]
+)
 
 const guestLookupQueries = [
     (token: string) =>
         sql`
-            SELECT id, token, name
+            SELECT id, token, name, is_admin
             FROM guests
             WHERE token = ${token}
             LIMIT 1
@@ -112,8 +135,20 @@ export async function getAuthenticatedGuestToken(): Promise<GuestLookupRow | nul
     return user
 }
 
+export function isGuestAdmin(user: GuestLookupRow | null): boolean {
+    if (!user) {
+        return false
+    }
+
+    if (user.is_admin === true) {
+        return true
+    }
+
+    return adminTokenAllowList.has(user.token)
+}
+
 export async function fetchGuestRsvpData(
-    guestId: number | null
+    guestId: string | null
 ): Promise<RsvpData | null> {
     if (!guestId) {
         return null

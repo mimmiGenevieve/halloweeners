@@ -3,6 +3,7 @@ import RsvpForm from './RsvpForm'
 import {
     getAuthenticatedGuestToken,
     fetchGuestRsvpData,
+    isGuestAdmin,
 } from '@/lib/guest-auth'
 import { redirect } from 'next/navigation'
 
@@ -23,6 +24,7 @@ export default async function RSVPPage({ searchParams }: RSVPPageProps) {
     }
 
     const authenticatedUser = await getAuthenticatedGuestToken()
+    const isAdmin = isGuestAdmin(authenticatedUser)
     const existingRsvp = authenticatedUser
         ? await fetchGuestRsvpData(authenticatedUser.id)
         : null
@@ -32,6 +34,7 @@ export default async function RSVPPage({ searchParams }: RSVPPageProps) {
             activePage="rsvp"
             authError={authError}
             isAuthenticated={!!authenticatedUser}
+            isAdmin={isAdmin}
         >
             <p className="lg:text-7xl text-5xl mt-4 font-bold moontime mb-5 text-center">
                 Registration to attend
@@ -41,6 +44,7 @@ export default async function RSVPPage({ searchParams }: RSVPPageProps) {
                     ? 'The spirits already hold your name.\nYou may revise your fate below until October 28th.'
                     : 'The spirits require your answer no later than October 28th.'}
             </p>
+
             <RsvpForm user={authenticatedUser} existingRsvp={existingRsvp} />
         </InvitationShell>
     )

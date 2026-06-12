@@ -51,3 +51,8 @@ button {
 button:disabled {
     cursor: default;
 }
+
+option:active {
+    background-color: var(--foreground);
+    color: var(--background);
+}
