@@ -10,12 +10,11 @@ import { redirect } from 'next/navigation'
 type RSVPPageProps = {
     searchParams: Promise<{
         token?: string
-        authError?: string
     }>
 }
 
 export default async function RSVPPage({ searchParams }: RSVPPageProps) {
-    const { token, authError } = await searchParams
+    const { token } = await searchParams
 
     if (token) {
         redirect(
@@ -29,10 +28,13 @@ export default async function RSVPPage({ searchParams }: RSVPPageProps) {
         ? await fetchGuestRsvpData(authenticatedUser.id)
         : null
 
+    if (!authenticatedUser) {
+        redirect('/')
+    }
+
     return (
         <InvitationShell
             activePage="rsvp"
-            authError={authError}
             isAuthenticated={!!authenticatedUser}
             isAdmin={isAdmin}
         >

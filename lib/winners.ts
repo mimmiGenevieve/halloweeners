@@ -5,6 +5,15 @@ export type GuestOption = {
     name: string
 }
 
+export type SignedUpGuestOption = {
+    id: string
+    name: string
+    email: string | null
+    bringing_plus_one: boolean
+    plus_one_name: string | null
+    cipher_answer: string | null
+}
+
 export type PrizeOption = {
     id: string
     name: string
@@ -84,6 +93,18 @@ export async function fetchGuestsForAdminForm(): Promise<GuestOption[]> {
         ORDER BY name ASC
     `
     return result as GuestOption[]
+}
+
+export async function fetchSignedUpGuestsForAdminPage(): Promise<
+    SignedUpGuestOption[]
+> {
+    const result = await sql`
+        SELECT g.*, r.*
+        FROM guests g
+        INNER JOIN rsvps r ON r.guest_id = g.id
+        ORDER BY g.name ASC
+    `
+    return result as SignedUpGuestOption[]
 }
 
 export async function fetchPrizesForAdminForm(): Promise<PrizeOption[]> {
