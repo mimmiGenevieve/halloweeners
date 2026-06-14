@@ -1,3 +1,4 @@
+import { fetchGuestPreviousYearPrizes } from '@/lib/winners'
 import InvitationShell from '../InvitationShell'
 import RsvpForm from './RsvpForm'
 import {
@@ -27,6 +28,9 @@ export default async function RSVPPage({ searchParams }: RSVPPageProps) {
     const existingRsvp = authenticatedUser
         ? await fetchGuestRsvpData(authenticatedUser.id)
         : null
+    const previousYearPrize = authenticatedUser
+        ? await fetchGuestPreviousYearPrizes(authenticatedUser.id)
+        : undefined
 
     if (!authenticatedUser) {
         redirect('/')
@@ -47,7 +51,11 @@ export default async function RSVPPage({ searchParams }: RSVPPageProps) {
                     : 'The spirits require your answer no later than October 28th.'}
             </p>
 
-            <RsvpForm user={authenticatedUser} existingRsvp={existingRsvp} />
+            <RsvpForm
+                user={authenticatedUser}
+                existingRsvp={existingRsvp}
+                prize={previousYearPrize}
+            />
         </InvitationShell>
     )
 }

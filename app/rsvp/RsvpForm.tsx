@@ -1,16 +1,25 @@
 'use client'
 
 import { GuestLookupRow, RsvpData } from '@/lib/guest-auth'
-import { submitRsvp } from './actions'
+import { sendConfirmationEmail, submitRsvp } from './actions'
 import { useState } from 'react'
 
 type RsvpFormProps = {
     user: GuestLookupRow | null
     existingRsvp: RsvpData | null
+    prize?: string
 }
 
-export default function RsvpForm({ user, existingRsvp }: RsvpFormProps) {
-    const [formData, setFormData] = useState({
+type FormDataType = {
+    name: string
+    email?: string
+    bringingCompanion: boolean
+    companionName?: string
+    cipherAnswer?: string
+}
+
+export default function RsvpForm({ user, existingRsvp, prize }: RsvpFormProps) {
+    const [formData, setFormData] = useState<FormDataType>({
         name: user?.name ?? '',
         email: existingRsvp?.email ?? '',
         bringingCompanion: existingRsvp?.bringing_plus_one ?? false,
@@ -33,16 +42,30 @@ export default function RsvpForm({ user, existingRsvp }: RsvpFormProps) {
 
         try {
             const formDataObj = new FormData()
-            formDataObj.append('email', formData.email)
+            formData.email && formDataObj.append('email', formData.email)
             formDataObj.append(
                 'bringingCompanion',
                 String(formData.bringingCompanion)
             )
-            formDataObj.append('companionName', formData.companionName)
-            formDataObj.append('cipherAnswer', formData.cipherAnswer)
+            formData.companionName &&
+                formDataObj.append('companionName', formData.companionName)
+            formData.cipherAnswer &&
+                formDataObj.append('cipherAnswer', formData.cipherAnswer)
 
             await submitRsvp(formDataObj)
-            setSuccessMessage('The spirits have received your answer.')
+
+            formData.email &&
+                sendConfirmationEmail(
+                    formData.name,
+                    formData.email,
+                    formData.bringingCompanion
+                        ? formData.companionName
+                        : undefined,
+                    prize
+                )
+            setSuccessMessage(
+                `The spirits have received your answer${formData.email ? ', and they have whispered a confirmation to your inbox. If silence greets you, check your spam.' : '.'}`
+            )
         } catch (error) {
             console.error('RSVP submission failed:', error)
             setSuccessMessage(
