@@ -21,12 +21,12 @@ export default async function Home({ searchParams }: HomePageProps) {
     const isAdmin = isGuestAdmin(authenticatedToken)
 
     const previousYear = getPreviousYear()
-    const previousYearPrizes = authenticatedToken
+    const previousYearPrize = authenticatedToken
         ? await fetchGuestPreviousYearPrizes(
               authenticatedToken.id,
               previousYear
           )
-        : []
+        : null
 
     return (
         <InvitationShell
@@ -35,7 +35,7 @@ export default async function Home({ searchParams }: HomePageProps) {
             isAdmin={isAdmin}
             authError={authError}
         >
-            {previousYearPrizes.length > 0 && (
+            {previousYearPrize && (
                 <div className="border border-fuchsia-300/50 bg-fuchsia-300/10 rounded p-4 mb-8 text-left flex flex-col gap-4">
                     <p className="moontime lg:text-7xl text-5xl text-center">
                         Honored champion of last year
@@ -43,11 +43,9 @@ export default async function Home({ searchParams }: HomePageProps) {
                     <p>
                         Your triumph at last year's gathering has not been
                         forgotten. As the reigning master of{' '}
-                        <span className="font-bold">
-                            {previousYearPrizes.join(', ')}
-                        </span>
-                        , your legacy is secure—but your reign must end, for a
-                        new master shall be crowned this year.
+                        <span className="font-bold">{previousYearPrize}</span>,
+                        your legacy is secure—but your reign must end, for a new
+                        master shall be crowned this year.
                     </p>
 
                     <p>

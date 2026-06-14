@@ -3,6 +3,8 @@
 import { sql } from '@/lib/neon'
 import { revalidatePath } from 'next/cache'
 import { getAuthenticatedGuestToken } from '@/lib/guest-auth'
+import { Resend } from 'resend'
+import { confirmationEmailHtml } from './emailTemplate'
 
 const EMAIL_MAX_LENGTH = 320
 const NAME_MAX_LENGTH = 120
@@ -50,11 +52,7 @@ export async function submitRsvp(formData: FormData) {
         CIPHER_MAX_LENGTH
     )
 
-    if (!email) {
-        throw new Error('Email is required')
-    }
-
-    if (!isValidEmail(email)) {
+    if (email && !isValidEmail(email)) {
         throw new Error('Invalid email format')
     }
 
@@ -87,4 +85,31 @@ export async function submitRsvp(formData: FormData) {
         console.error('Failed to submit RSVP:', error)
         throw error
     }
+}
+
+const resend = new Resend(process.env.RESEND_API_KEY)
+
+export async function sendConfirmationEmail(
+    name: string,
+    email: string,
+    companionName?: string,
+    prize?: string
+) {
+    await resend.emails.send({
+        from: 'spirits@halloweeners.se',
+        to: email,
+        subject: 'The spirits have recorded your name',
+        html: confirmationEmailHtml({
+            name,
+            companionName,
+            prize,
+        }),
+    })
+
+    // await resend.emails.send({
+    //         from: 'spirits@halloweeners.se',
+    //         to: email,
+    //         subject: '🎃 RSVP confirmed!',
+    //         html: `<p>See you at the party, ${name}.</p>`,
+    //     })
 }

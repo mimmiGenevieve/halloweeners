@@ -41,7 +41,7 @@ export function getPreviousYear(year = new Date().getFullYear()): number {
 export async function fetchGuestPreviousYearPrizes(
     guestId: string,
     year = getPreviousYear()
-): Promise<string[]> {
+): Promise<string | undefined> {
     try {
         const result = await sql`
             SELECT pc.name
@@ -51,11 +51,13 @@ export async function fetchGuestPreviousYearPrizes(
             WHERE pr.guest_id = ${guestId}
               AND p.year = ${year}
             ORDER BY pc.name ASC
+            LIMIT 1
         `
-        return (result as Array<{ name: string }>).map((row) => row.name)
+        const row = (result as Array<{ name: string }>)[0]
+        return row && row.name
     } catch (error) {
         if (isMissingRelationError(error)) {
-            return []
+            return
         }
         throw error
     }
