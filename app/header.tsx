@@ -1,6 +1,7 @@
 'use client'
+import { useAdminStatusCache } from '@/lib/auth-cache'
 import Link from 'next/link'
-import { useRef, useState } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 
 type HeaderProps = {
     activePage: 'details' | 'rsvp' | 'admin'
@@ -38,8 +39,11 @@ export default function Header({
     isAdmin,
 }: HeaderProps) {
     const [showEasterEgg, setShowEasterEgg] = useState(false)
+    const [cachedIsAdmin] = useAdminStatusCache()
     const clickCount = useRef(0)
     const resetTimer = useRef<NodeJS.Timeout | null>(null)
+
+    const effectiveIsAdmin = isAdmin ?? cachedIsAdmin
 
     const handleHeaderClick = () => {
         clickCount.current += 1
@@ -66,7 +70,7 @@ export default function Header({
             >
                 <h1
                     className="lg:text-9xl text-6xl font-bold"
-                    onClick={(e) =>
+                    onClick={() =>
                         window.open(
                             'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
                             '_blank'
@@ -96,24 +100,20 @@ export default function Header({
                         >
                             RSVP
                         </Link>
-                        {isAdmin && (
-                            <>
-                                |
-                                <Link
-                                    href="/admin"
-                                    className={
-                                        activePage === 'admin'
-                                            ? 'underline'
-                                            : ''
-                                    }
-                                >
-                                    Admin
-                                </Link>
-                            </>
-                        )}
                     </div>
                 )}
             </div>
+
+            {effectiveIsAdmin && (
+                <>
+                    <Link
+                        href="/admin"
+                        className={`text-neutral-400 absolute right-0 p-3 lg:p-10 text-base ${activePage === 'admin' ? 'underline' : ''}`}
+                    >
+                        ADMIN
+                    </Link>
+                </>
+            )}
         </>
     )
 }

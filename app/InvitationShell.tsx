@@ -1,10 +1,12 @@
 import TokenAccessForm from './TokenAccessForm'
 import Header from './header'
+import LoadingSkeleton from './LoadingSkeleton'
 
 type InvitationShellProps = {
     activePage: 'details' | 'rsvp' | 'admin'
     children: React.ReactNode
     isAuthenticated: boolean
+    isLoading?: boolean
     isAdmin?: boolean
     authError?: string
 }
@@ -13,6 +15,7 @@ export default function InvitationShell({
     activePage,
     children,
     isAuthenticated,
+    isLoading,
     isAdmin,
     authError,
 }: InvitationShellProps) {
@@ -28,7 +31,7 @@ export default function InvitationShell({
                 />
                 {isAuthenticated ? (
                     <div className="flex flex-col bg-(--background)/60 p-[50px] mt-10 lg:mt-12 gap-2 w-full lg:w-200  overflow-y-auto no-scrollbar text-base">
-                        {children}
+                        {isLoading ? <LoadingSkeleton /> : children}
                     </div>
                 ) : (
                     <div className="flex flex-col bg-(--background)/60 p-[50px] mt-10 lg:mt-12 gap-2 w-full lg:w-200 lg:h-110 overflow-y-auto no-scrollbar text-base">

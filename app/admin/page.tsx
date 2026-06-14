@@ -1,107 +1,139 @@
-import { redirect } from 'next/navigation'
+'use client'
+
+import { useState, useEffect, Suspense, useRef } from 'react'
 import InvitationShell from '../InvitationShell'
-import { getAuthenticatedGuestToken, isGuestAdmin } from '@/lib/guest-auth'
-import {
-    fetchGuestsForAdminForm,
-    fetchPrizesForAdminForm,
-    fetchSignedUpGuestsForAdminPage,
-    fetchWinnersByYear,
-    getPreviousYear,
-} from '@/lib/winners'
 import WinnersRegistry from './winnersRegistry'
+import { GuestOption, PrizeOption, WinnerRow } from '@/lib/winners'
+import { useSearchParams } from 'next/navigation'
+import { useAdminStatusCache } from '@/lib/auth-cache'
 
-type AdminPageProps = {
-    searchParams: Promise<{
-        token?: string
+type AdminDataResponse = {
+    user: { id: string; name: string; is_admin?: boolean } | null
+    guests: GuestOption[]
+    signedUpGuests: Array<{
+        id: string
+        name: string
+        email: string | null
+        bringing_plus_one: boolean
+        plus_one_name: string | null
+        cipher_answer: string | null
     }>
-}
+    prizes: PrizeOption[]
+    previousYearWinners: WinnerRow[]
+} | null
 
-export default async function AdminPage({ searchParams }: AdminPageProps) {
-    const { token } = await searchParams
+function AdminPageContent() {
+    const searchParams = useSearchParams()
+    const token = searchParams?.get('token')
+    const [data, setData] = useState<AdminDataResponse>(null)
+    const [loading, setLoading] = useState(true)
+    const [cachedIsAdmin, updateAdminStatus] = useAdminStatusCache()
+    const hasFetched = useRef(false)
+
+    useEffect(() => {
+        if (hasFetched.current) return
+
+        if (token) {
+            window.location.href = `/auth/token?token=${encodeURIComponent(token)}&next=/admin`
+            return
+        }
+
+        hasFetched.current = true
+        const fetchData = async () => {
+            const response = await fetch('/api/admin-data')
+            const result = await response.json()
+            setData(result)
+            setLoading(false)
+            if (result?.user?.is_admin !== undefined) {
+                updateAdminStatus(result.user.is_admin)
+            }
+            if (!result?.user) {
+                window.location.href = '/'
+            } else if (!result.user.is_admin) {
+                window.location.href = '/'
+            }
+        }
+        fetchData()
+    }, [token])
 
     if (token) {
-        redirect(
-            '/auth/token?token=' + encodeURIComponent(token) + '&next=/admin'
-        )
+        return null
     }
 
-    const user = await getAuthenticatedGuestToken()
-    const isAdmin = isGuestAdmin(user)
+    const isAdmin = data?.user?.is_admin ?? cachedIsAdmin
 
-    if ((user && !isAdmin) || !user) {
-        redirect('/')
-    }
-
-    const previousYear = getPreviousYear()
-
-    const [guests, signedUpGuests, prizes, previousYearWinners] =
-        await Promise.all([
-            fetchGuestsForAdminForm(),
-            fetchSignedUpGuestsForAdminPage(),
-            fetchPrizesForAdminForm(),
-            fetchWinnersByYear(previousYear),
-        ])
+    const previousYear = new Date().getFullYear() - 1
 
     return (
         <InvitationShell
             activePage="admin"
             isAuthenticated={true}
+            isLoading={loading}
             isAdmin={isAdmin}
         >
-            <p className="lg:text-7xl text-5xl mt-4 font-bold moontime mb-5 text-center">
-                Signed up Guests
-            </p>
+            {!loading && data && (
+                <>
+                    <p className="lg:text-7xl text-5xl mt-4 font-bold moontime mb-5 text-center">
+                        Signed up Guests
+                    </p>
 
-            <p className="text-center mb-8">
-                {signedUpGuests.length +
-                    signedUpGuests.filter((guest) => guest.bringing_plus_one)
-                        .length}{' '}
-                souls (
-                {
-                    signedUpGuests.filter((guest) => guest.bringing_plus_one)
-                        .length
-                }{' '}
-                plus one
-                {signedUpGuests.filter((guest) => guest.bringing_plus_one)
-                    .length > 1
-                    ? 's'
-                    : ''}
-                ) have pledged to attend the gathering.
-            </p>
+                    <p className="text-center mb-8">
+                        {data.signedUpGuests.length +
+                            data.signedUpGuests.filter((guest) => guest.bringing_plus_one)
+                                .length}{' '}
+                        souls (
+                        {
+                            data.signedUpGuests.filter((guest) => guest.bringing_plus_one)
+                                .length
+                        }{' '}
+                        plus one
+                        {data.signedUpGuests.filter((guest) => guest.bringing_plus_one)
+                            .length > 1
+                            ? 's'
+                            : ''}
+                        ) have pledged to attend the gathering.
+                    </p>
 
-            {signedUpGuests.length > 0 ? (
-                <div
-                    className="overflow-x-auto 
-                 rounded"
-                >
-                    <ul className="space-y-2 list-disc list-inside">
-                        {signedUpGuests.map((guest) => (
-                            <li key={guest.id}>
-                                <strong>{guest.name}</strong> ({guest.email})
-                                <ul className="pl-5">
-                                    {guest.bringing_plus_one && (
-                                        <li>Bringing: {guest.plus_one_name}</li>
-                                    )}
-                                    {guest.cipher_answer && (
-                                        <li>
-                                            Cipher answer: {guest.cipher_answer}
-                                        </li>
-                                    )}
-                                </ul>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            ) : (
-                <p>No winners recorded for {previousYear}.</p>
+                    {data.signedUpGuests.length > 0 ? (
+                        <div className="overflow-x-auto rounded">
+                            <ul className="space-y-2 list-disc list-inside">
+                                {data.signedUpGuests.map((guest) => (
+                                    <li key={guest.id}>
+                                        <strong>{guest.name}</strong> ({guest.email})
+                                        <ul className="pl-5">
+                                            {guest.bringing_plus_one && (
+                                                <li>Bringing: {guest.plus_one_name}</li>
+                                            )}
+                                            {guest.cipher_answer && (
+                                                <li>
+                                                    Cipher answer: {guest.cipher_answer}
+                                                </li>
+                                            )}
+                                        </ul>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ) : (
+                        <p>No winners recorded for {previousYear}.</p>
+                    )}
+
+                    <WinnersRegistry
+                        guests={data.guests}
+                        prizes={data.prizes}
+                        previousYearWinners={data.previousYearWinners}
+                        previousYear={previousYear}
+                    />
+                </>
             )}
-
-            <WinnersRegistry
-                guests={guests}
-                prizes={prizes}
-                previousYearWinners={previousYearWinners}
-                previousYear={previousYear}
-            />
         </InvitationShell>
+    )
+}
+
+export default function AdminPage() {
+    return (
+        <Suspense fallback={null}>
+            <AdminPageContent />
+        </Suspense>
     )
 }

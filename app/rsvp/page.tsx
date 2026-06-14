@@ -1,61 +1,89 @@
-import { fetchGuestPreviousYearPrizes } from '@/lib/winners'
+'use client'
+
+import { useState, useEffect, Suspense, useRef } from 'react'
 import InvitationShell from '../InvitationShell'
+import { RsvpData } from '@/lib/guest-auth'
 import RsvpForm from './RsvpForm'
-import {
-    getAuthenticatedGuestToken,
-    fetchGuestRsvpData,
-    isGuestAdmin,
-} from '@/lib/guest-auth'
-import { redirect } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
+import { useAdminStatusCache } from '@/lib/auth-cache'
 
-type RSVPPageProps = {
-    searchParams: Promise<{
-        token?: string
-    }>
-}
+type RsvpDataResponse = {
+    user: { id: string; name: string; is_admin?: boolean } | null
+    existingRsvp: RsvpData | null
+    prize?: string
+} | null
 
-export default async function RSVPPage({ searchParams }: RSVPPageProps) {
-    const { token } = await searchParams
+function RsvpPageContent() {
+    const searchParams = useSearchParams()
+    const token = searchParams?.get('token')
+    const [data, setData] = useState<RsvpDataResponse>(null)
+    const [loading, setLoading] = useState(true)
+    const [cachedIsAdmin, updateAdminStatus] = useAdminStatusCache()
+    const hasFetched = useRef(false)
+
+    useEffect(() => {
+        if (hasFetched.current) return
+
+        if (token) {
+            window.location.href = `/auth/token?token=${encodeURIComponent(token)}&next=/rsvp`
+            return
+        }
+
+        hasFetched.current = true
+        const fetchData = async () => {
+            const response = await fetch('/api/rsvp-data')
+            const result = await response.json()
+            setData(result)
+            setLoading(false)
+            if (result?.user?.is_admin !== undefined) {
+                updateAdminStatus(result.user.is_admin)
+            }
+            if (!result?.user) {
+                window.location.href = '/'
+            }
+        }
+        fetchData()
+    }, [token])
 
     if (token) {
-        redirect(
-            '/auth/token?token=' + encodeURIComponent(token) + '&next=/rsvp'
-        )
+        return null
     }
 
-    const authenticatedUser = await getAuthenticatedGuestToken()
-    const isAdmin = isGuestAdmin(authenticatedUser)
-    const existingRsvp = authenticatedUser
-        ? await fetchGuestRsvpData(authenticatedUser.id)
-        : null
-    const previousYearPrize = authenticatedUser
-        ? await fetchGuestPreviousYearPrizes(authenticatedUser.id)
-        : undefined
-
-    if (!authenticatedUser) {
-        redirect('/')
-    }
+    const isAdmin = data?.user?.is_admin ?? cachedIsAdmin
 
     return (
         <InvitationShell
             activePage="rsvp"
-            isAuthenticated={!!authenticatedUser}
+            isAuthenticated={true}
+            isLoading={loading}
             isAdmin={isAdmin}
         >
-            <p className="lg:text-7xl text-5xl mt-4 font-bold moontime mb-5 text-center">
-                Registration to attend
-            </p>
-            <p className="italic text-center mb-8 lg:whitespace-pre whitespace-pre-wrap">
-                {existingRsvp
-                    ? 'The spirits already hold your name.\nYou may revise your fate below until October 28th.'
-                    : 'The spirits require your answer no later than October 28th.'}
-            </p>
+            {!loading && data?.user && (
+                <>
+                    <p className="lg:text-7xl text-5xl mt-4 font-bold moontime mb-5 text-center">
+                        Registration to attend
+                    </p>
+                    <p className="italic text-center mb-8 whitespace-pre-wrap">
+                        {data.existingRsvp
+                            ? 'The spirits already hold your name.\nYou may revise your fate below until October 28th.'
+                            : 'The spirits require your answer no later than October 28th.'}
+                    </p>
 
-            <RsvpForm
-                user={authenticatedUser}
-                existingRsvp={existingRsvp}
-                prize={previousYearPrize}
-            />
+                    <RsvpForm
+                        user={{ id: data.user.id, name: data.user.name }}
+                        existingRsvp={data.existingRsvp}
+                        prize={data.prize}
+                    />
+                </>
+            )}
         </InvitationShell>
+    )
+}
+
+export default function RSVPPage() {
+    return (
+        <Suspense fallback={null}>
+            <RsvpPageContent />
+        </Suspense>
     )
 }
