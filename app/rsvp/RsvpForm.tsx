@@ -1,11 +1,11 @@
 'use client'
 
-import { GuestLookupRow, RsvpData } from '@/lib/guest-auth'
+import { RsvpData } from '@/lib/guest-auth'
 import { sendConfirmationEmail, submitRsvp } from './actions'
 import { useState } from 'react'
 
 type RsvpFormProps = {
-    user: GuestLookupRow | null
+    user: { id: string; name: string; token?: string } | null
     existingRsvp: RsvpData | null
     prize?: string
 }
@@ -42,19 +42,23 @@ export default function RsvpForm({ user, existingRsvp, prize }: RsvpFormProps) {
 
         try {
             const formDataObj = new FormData()
-            formData.email && formDataObj.append('email', formData.email)
+            if (formData.email) {
+                formDataObj.append('email', formData.email)
+            }
             formDataObj.append(
                 'bringingCompanion',
                 String(formData.bringingCompanion)
             )
-            formData.companionName &&
+            if (formData.companionName) {
                 formDataObj.append('companionName', formData.companionName)
-            formData.cipherAnswer &&
+            }
+            if (formData.cipherAnswer) {
                 formDataObj.append('cipherAnswer', formData.cipherAnswer)
+            }
 
             await submitRsvp(formDataObj)
 
-            formData.email &&
+            if (formData.email) {
                 sendConfirmationEmail(
                     formData.name,
                     formData.email,
@@ -63,6 +67,7 @@ export default function RsvpForm({ user, existingRsvp, prize }: RsvpFormProps) {
                         : undefined,
                     prize
                 )
+            }
             setSuccessMessage(
                 `The spirits have received your answer${formData.email ? ', and they have whispered a confirmation to your inbox. If silence greets you, check your spam.' : '.'}`
             )
