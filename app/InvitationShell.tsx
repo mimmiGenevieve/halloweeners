@@ -22,7 +22,9 @@ export default function InvitationShell({
     const pathPrefix = activePage === 'details' ? '' : activePage
 
     return (
-        <div className="flex flex-col flex-1 items-center justify-center bg-linear-to-b from-mauve-900/10 to-mauve-950/90">
+        <div
+            className={`flex flex-col flex-1 items-center justify-center bg-linear-to-b ${isAuthenticated ? 'from-mauve-900/10 to-mauve-950/90' : 'from-zinc-900/10 to-zinc-950 via-zinc-900'} min-h-screen w-full`}
+        >
             <main className="flex flex-1 w-full flex-col items-center mt-10 lg:mt-12">
                 <Header
                     activePage={activePage}
