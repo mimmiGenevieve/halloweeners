@@ -22,7 +22,10 @@ export default async function Home({ searchParams }: HomePageProps) {
 
     const previousYear = getPreviousYear()
     const previousYearPrize = authenticatedToken
-        ? await fetchGuestPreviousYearPrizes(authenticatedToken.id, previousYear)
+        ? await fetchGuestPreviousYearPrizes(
+              authenticatedToken.id,
+              previousYear
+          )
         : null
 
     return (
@@ -86,7 +89,7 @@ export default async function Home({ searchParams }: HomePageProps) {
             </p>
             <p>
                 Prizes will be bestowed in the following categories:{' '}
-                <b>Best Duo</b>, <b>Best Single</b>, <b>Scariest</b>, and{' '}
+                <b>Best Duo</b>, <b>Best Single</b>, <b>Scariest</b>, and
                 <b> Most Creative</b>.
             </p>
 
