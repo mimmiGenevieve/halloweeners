@@ -29,7 +29,7 @@ export default function TokenAccessForm({
 
         try {
             const formDataObj = new FormData()
-            formDataObj.append('token', formData.token)
+            formDataObj.append('token', formData.token.trim().toLowerCase())
             formDataObj.append('nextPath', formData.nextPath)
 
             await authenticateGuestToken(formDataObj)
