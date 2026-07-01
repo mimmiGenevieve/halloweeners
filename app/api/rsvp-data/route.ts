@@ -1,4 +1,8 @@
-import { getAuthenticatedGuestToken, fetchGuestRsvpData } from '@/lib/guest-auth'
+import {
+    getAuthenticatedGuestToken,
+    fetchGuestRsvpData,
+} from '@/lib/guest-auth'
+import { fetchPartyInfoAndEmailDetails } from '@/lib/party-details'
 import { fetchGuestPreviousYearPrizes, getPreviousYear } from '@/lib/winners'
 
 export async function GET() {
@@ -7,9 +11,10 @@ export async function GET() {
         return new Response(JSON.stringify(null), { status: 200 })
     }
 
-    const [existingRsvp, prize] = await Promise.all([
+    const [existingRsvp, prize, partyDetails] = await Promise.all([
         fetchGuestRsvpData(user.id),
         fetchGuestPreviousYearPrizes(user.id, getPreviousYear()),
+        fetchPartyInfoAndEmailDetails(),
     ])
 
     return new Response(
@@ -21,6 +26,7 @@ export async function GET() {
             },
             existingRsvp,
             prize,
+            partyDetails,
         }),
         {
             status: 200,

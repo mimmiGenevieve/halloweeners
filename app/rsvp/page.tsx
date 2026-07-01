@@ -6,11 +6,13 @@ import { RsvpData } from '@/lib/guest-auth'
 import RsvpForm from './RsvpForm'
 import { useSearchParams } from 'next/navigation'
 import { useAdminStatusCache } from '@/lib/auth-cache'
+import { PartyInfo } from '@/lib/party-details'
 
 type RsvpDataResponse = {
     user: { id: string; name: string; is_admin?: boolean } | null
     existingRsvp: RsvpData | null
     prize?: string
+    partyDetails: PartyInfo
 } | null
 
 function RsvpPageContent() {
@@ -73,6 +75,7 @@ function RsvpPageContent() {
                         user={{ id: data.user.id, name: data.user.name }}
                         existingRsvp={data.existingRsvp}
                         prize={data.prize}
+                        partyDetails={data.partyDetails}
                     />
                 </>
             )}

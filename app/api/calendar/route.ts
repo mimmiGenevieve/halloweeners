@@ -1,6 +1,9 @@
+import { fetchPartyInfoAndEmailDetails } from '@/lib/party-details'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
+    const partyDetails = await fetchPartyInfoAndEmailDetails()
+
     const icsContent = [
         'BEGIN:VCALENDAR',
         'VERSION:2.0',
@@ -8,11 +11,11 @@ export async function GET() {
         'CALSCALE:GREGORIAN',
         'METHOD:PUBLISH',
         'BEGIN:VEVENT',
-        'DTSTART:20261031T180000',
-        'DTEND:20261101T020000',
-        'SUMMARY:The Halloweeners',
-        'LOCATION:Kungsportsavenyen 1, 411 36 Gothenburg',
-        'DESCRIPTION:The spirits await your arrival.',
+        `DTSTART:${partyDetails!.calendar_details.from}`,
+        `DTEND:${partyDetails!.calendar_details.to}`,
+        `SUMMARY:${partyDetails!.calendar_details.details}`,
+        `LOCATION:${partyDetails!.party_details.address}`,
+        `DESCRIPTION:${partyDetails!.calendar_details.details || ''}`,
         'STATUS:CONFIRMED',
         'END:VEVENT',
         'END:VCALENDAR',

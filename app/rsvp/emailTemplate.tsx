@@ -1,11 +1,15 @@
-export function confirmationEmailHtml({
+import { PartyInfo } from '@/lib/party-details'
+
+export async function confirmationEmailHtml({
     name,
     prize,
     companionName,
+    partyDetails,
 }: {
     name: string
     prize?: string
     companionName?: string
+    partyDetails: PartyInfo
 }) {
     const googleCalendarUrl = new URL(
         'https://calendar.google.com/calendar/render'
@@ -14,15 +18,15 @@ export function confirmationEmailHtml({
     googleCalendarUrl.searchParams.set('text', 'The Halloweeners')
     googleCalendarUrl.searchParams.set(
         'dates',
-        '20261031T180000/20261101T020000'
+        `${partyDetails.calendar_details.from}/${partyDetails.calendar_details.to}`
     )
     googleCalendarUrl.searchParams.set(
         'location',
-        'Kungsportsavenyen 1, 411 36 Gothenburg'
+        partyDetails.party_details.address
     )
     googleCalendarUrl.searchParams.set(
         'details',
-        'The spirits await your arrival.'
+        partyDetails.calendar_details.details || ''
     )
 
     const previousWinnerBlock = prize

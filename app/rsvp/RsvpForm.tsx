@@ -3,11 +3,13 @@
 import { RsvpData } from '@/lib/guest-auth'
 import { sendConfirmationEmail, submitRsvp } from './actions'
 import { useState } from 'react'
+import { PartyInfo } from '@/lib/party-details'
 
 type RsvpFormProps = {
     user: { id: string; name: string; token?: string } | null
     existingRsvp: RsvpData | null
     prize?: string
+    partyDetails: PartyInfo
 }
 
 type FormDataType = {
@@ -18,7 +20,12 @@ type FormDataType = {
     cipherAnswer?: string
 }
 
-export default function RsvpForm({ user, existingRsvp, prize }: RsvpFormProps) {
+export default function RsvpForm({
+    user,
+    existingRsvp,
+    prize,
+    partyDetails,
+}: RsvpFormProps) {
     const [formData, setFormData] = useState<FormDataType>({
         name: user?.name ?? '',
         email: existingRsvp?.email ?? '',
@@ -55,11 +62,15 @@ export default function RsvpForm({ user, existingRsvp, prize }: RsvpFormProps) {
             if (formData.cipherAnswer) {
                 formDataObj.append('cipherAnswer', formData.cipherAnswer)
             }
+            if (formData.name !== user?.name) {
+                formDataObj.append('name', formData.name)
+            }
 
             await submitRsvp(formDataObj)
 
-            if (formData.email) {
+            if (formData.email && partyDetails) {
                 sendConfirmationEmail(
+                    partyDetails,
                     formData.name,
                     formData.email,
                     formData.bringingCompanion

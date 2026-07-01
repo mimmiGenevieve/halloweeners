@@ -1,7 +1,7 @@
 'use client'
 import { useAdminStatusCache } from '@/lib/auth-cache'
 import Link from 'next/link'
-import { useRef, useState, useEffect, useCallback } from 'react'
+import { useRef, useState } from 'react'
 
 type HeaderProps = {
     activePage: 'details' | 'rsvp' | 'admin'

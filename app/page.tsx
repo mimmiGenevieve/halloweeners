@@ -2,6 +2,11 @@ import { fetchGuestPreviousYearPrizes, getPreviousYear } from '@/lib/winners'
 import InvitationShell from './InvitationShell'
 import { redirect } from 'next/navigation'
 import { getAuthenticatedGuestToken, isGuestAdmin } from '@/lib/guest-auth'
+import {
+    fetchPartyInfoAndEmailDetails,
+    formatPartyDate,
+} from '@/lib/party-details'
+import { BoldText } from '@/lib/bold'
 
 type HomePageProps = {
     searchParams: Promise<{
@@ -27,6 +32,8 @@ export default async function Home({ searchParams }: HomePageProps) {
               previousYear
           )
         : null
+
+    const partyDetails = await fetchPartyInfoAndEmailDetails()
 
     return (
         <InvitationShell
@@ -64,25 +71,37 @@ export default async function Home({ searchParams }: HomePageProps) {
                 Essential Details for the Night
             </p>
 
-            <div className="flex flex-col">
-                <span>Date: October 31st, 2026.</span>
-                <span>Time: 6:00 PM to late</span>
-                <span>
-                    Location: Kungsportsavenyen 1, 411 36 Göteborg.{' '}
-                    <a
-                        href="https://maps.app.goo.gl/m4Aqvqb6J3yeMaKKA"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="underline"
-                    >
-                        Directions.
-                    </a>
-                </span>
-                <i>
-                    Upon your arrival, call <b>Twoday</b> on the intercom to be
-                    granted entry.
-                </i>
-            </div>
+            {partyDetails?.party_details && (
+                <div className="flex flex-col">
+                    <span>
+                        Date: {formatPartyDate(partyDetails.party_details.date)}
+                    </span>
+                    <span>
+                        Time: {partyDetails.party_details.start}
+                        {partyDetails.party_details.end &&
+                            ` to ${partyDetails.party_details.end}`}
+                    </span>
+                    <span>
+                        Location: {partyDetails.party_details.address}.{' '}
+                        <a
+                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(partyDetails.party_details.address)}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline"
+                        >
+                            Directions.
+                        </a>
+                    </span>
+                    {partyDetails.party_details.address_extra && (
+                        <i>
+                            <BoldText
+                                text={partyDetails.party_details.address_extra}
+                            />
+                        </i>
+                    )}
+                </div>
+            )}
+
             <p className="mt-7">
                 <b>Bring your own elixir of choice</b>, though light snacks will
                 be provided.

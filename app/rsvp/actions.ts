@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { getAuthenticatedGuestToken } from '@/lib/guest-auth'
 import { Resend } from 'resend'
 import { confirmationEmailHtml } from './emailTemplate'
+import { PartyInfo } from '@/lib/party-details'
 
 const EMAIL_MAX_LENGTH = 320
 const NAME_MAX_LENGTH = 120
@@ -39,6 +40,7 @@ export async function submitRsvp(formData: FormData) {
         throw new Error('Not authenticated')
     }
 
+    const name = readTextField(formData, 'name', NAME_MAX_LENGTH)
     const email = readTextField(formData, 'email', EMAIL_MAX_LENGTH)
     const bringingCompanion = readBooleanField(formData, 'bringingCompanion')
     const companionName = readTextField(
@@ -57,10 +59,10 @@ export async function submitRsvp(formData: FormData) {
     }
 
     try {
-        const result = await sql`
+        const rsvpResult = await sql`
             SELECT id FROM rsvps WHERE guest_id = ${user.id} LIMIT 1
         `
-        const [existing] = result as any[]
+        const [existing] = rsvpResult as any[]
 
         if (existing) {
             await sql`
@@ -79,6 +81,14 @@ export async function submitRsvp(formData: FormData) {
             `
         }
 
+        if (name) {
+            await sql`
+                UPDATE guests
+                SET name = ${name}
+                WHERE id = ${user.id}
+            `
+        }
+
         revalidatePath('/rsvp')
         return { success: true }
     } catch (error) {
@@ -90,26 +100,21 @@ export async function submitRsvp(formData: FormData) {
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function sendConfirmationEmail(
+    partyDetails: PartyInfo,
     name: string,
     email: string,
     companionName?: string,
     prize?: string
 ) {
     await resend.emails.send({
-        from: 'spirits@halloweeners.se',
+        from: partyDetails.email_details.from,
         to: email,
-        subject: 'The spirits have recorded your name',
-        html: confirmationEmailHtml({
+        subject: partyDetails.email_details.subject,
+        html: await confirmationEmailHtml({
             name,
             companionName,
             prize,
+            partyDetails,
         }),
     })
-
-    // await resend.emails.send({
-    //         from: 'spirits@halloweeners.se',
-    //         to: email,
-    //         subject: '🎃 RSVP confirmed!',
-    //         html: `<p>See you at the party, ${name}.</p>`,
-    //     })
 }

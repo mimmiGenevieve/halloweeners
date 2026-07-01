@@ -1,4 +1,4 @@
-import TokenAccessForm from './TokenAccessForm'
+import TokenAccessForm from './auth/TokenAccessForm'
 import Header from './header'
 import LoadingSkeleton from './LoadingSkeleton'
 
