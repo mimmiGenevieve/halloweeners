@@ -9,6 +9,7 @@ import {
     withAuthError,
     isValidGuestToken,
     normalizeToken,
+    setInviteTokenCookie,
 } from '@/lib/helpers'
 import { GuestLookupRow } from '@/lib/queries/guest-auth'
 
@@ -23,8 +24,6 @@ export async function getAuthenticatedGuestToken(): Promise<GuestLookupRow | nul
     const user = await isValidGuestToken(token)
     return user
 }
-
-const cookieMaxAgeSeconds = 60 * 60 * 24 * 45
 
 export async function authenticateGuestToken(formData: FormData) {
     const tokenValue = formData.get('token')
@@ -45,15 +44,7 @@ export async function authenticateGuestToken(formData: FormData) {
     }
 
     const cookieStore = await cookies()
-    cookieStore.set({
-        name: INVITE_COOKIE_NAME,
-        value: token!,
-        httpOnly: true,
-        sameSite: 'lax',
-        secure: process.env.NODE_ENV === 'production',
-        path: '/',
-        maxAge: cookieMaxAgeSeconds,
-    })
+    setInviteTokenCookie(cookieStore, token!)
 
     redirect(nextPath)
 }

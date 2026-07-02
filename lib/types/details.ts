@@ -1,5 +1,5 @@
 export type PartyDetailsRow = {
-    date: Date
+    date: Date | string
     start: string
     end: string
     address: string

@@ -2,6 +2,8 @@ import {
     ADMIN_TOKENS_ENV,
     TOKEN_MAX_LENGTH,
     TOKEN_ALLOWED_PATTERN,
+    INVITE_COOKIE_NAME,
+    INVITE_COOKIE_MAX_AGE_SECONDS,
 } from './constants'
 import { findGuestByToken, GuestLookupRow } from './queries/guest-auth'
 
@@ -34,7 +36,7 @@ const adminTokenAllowList = parseAdminTokensFromEnv(
 )
 
 export function normalizeToken(rawToken: string | null | undefined): string {
-    return (rawToken ?? '').trim()
+    return (rawToken ?? '').trim().toLowerCase()
 }
 
 export function sanitizeInviteToken(
@@ -103,4 +105,31 @@ export async function isValidGuestToken(
         console.error('Guest token validation failed:', error)
         return null
     }
+}
+
+type CookieJar = {
+    set: (options: {
+        name: string
+        value: string
+        httpOnly?: boolean
+        sameSite?: 'lax' | 'strict' | 'none'
+        secure?: boolean
+        path?: string
+        maxAge?: number
+    }) => void
+}
+
+export function setInviteTokenCookie(
+    cookieJar: CookieJar,
+    token: string
+): void {
+    cookieJar.set({
+        name: INVITE_COOKIE_NAME,
+        value: token,
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: process.env.NODE_ENV === 'production',
+        path: '/',
+        maxAge: INVITE_COOKIE_MAX_AGE_SECONDS,
+    })
 }

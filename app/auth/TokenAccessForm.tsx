@@ -1,6 +1,6 @@
 'use client'
 import { authenticateGuestToken } from '@/app/auth/actions'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 
 type TokenAccessFormProps = {
     nextPath: string
@@ -12,7 +12,7 @@ export default function TokenAccessForm({
     authError,
 }: TokenAccessFormProps) {
     const [hasError, setHasError] = useState(authError === 'invalid_token')
-    const [loading, setIsLoading] = useState(false)
+    const [isPending, startTransition] = useTransition()
     const [formData, setFormData] = useState({
         token: '',
         nextPath: nextPath,
@@ -20,27 +20,18 @@ export default function TokenAccessForm({
 
     useEffect(() => {
         setHasError(authError === 'invalid_token')
-        setIsLoading(false)
     }, [authError])
 
-    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
-        setIsLoading(true)
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        try {
-            const formDataObj = new FormData()
-            formDataObj.append('token', formData.token.trim().toLowerCase())
-            formDataObj.append('nextPath', formData.nextPath)
+        const formDataObj = new FormData()
+        formDataObj.append('token', formData.token.trim())
+        formDataObj.append('nextPath', formData.nextPath)
 
+        startTransition(async () => {
             await authenticateGuestToken(formDataObj)
-        } catch (error) {
-            console.error('RSVP submission failed:', error)
-
-            if (error === 'invalid_token') {
-                setHasError(true)
-                setIsLoading(false)
-            }
-        }
+        })
     }
 
     return (
@@ -73,9 +64,9 @@ export default function TokenAccessForm({
             <button
                 type="submit"
                 className="bg-(--foreground) text-(--background) py-2 px-4 rounded mt-10 w-max self-center "
-                disabled={loading}
+                disabled={isPending}
             >
-                {loading ? 'Entering...' : 'Enter'}
+                {isPending ? 'Entering...' : 'Enter'}
             </button>
         </form>
     )

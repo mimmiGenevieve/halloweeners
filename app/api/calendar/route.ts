@@ -1,8 +1,19 @@
+import { NextRequest, NextResponse } from 'next/server'
 import { fetchPartyInfoAndEmailDetails } from '@/lib/queries/party-details'
-import { NextResponse } from 'next/server'
+import { isValidGuestToken } from '@/lib/helpers'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+    const token = request.nextUrl.searchParams.get('token')
+    const guest = token ? await isValidGuestToken(token) : null
+
+    if (!guest) {
+        return new NextResponse('Not found', { status: 404 })
+    }
+
     const partyDetails = await fetchPartyInfoAndEmailDetails()
+    if (!partyDetails) {
+        return new NextResponse('Event details not configured', { status: 500 })
+    }
 
     const icsContent = [
         'BEGIN:VCALENDAR',
@@ -11,11 +22,11 @@ export async function GET() {
         'CALSCALE:GREGORIAN',
         'METHOD:PUBLISH',
         'BEGIN:VEVENT',
-        `DTSTART:${partyDetails!.calendar_details.from}`,
-        `DTEND:${partyDetails!.calendar_details.to}`,
-        `SUMMARY:${partyDetails!.calendar_details.details}`,
-        `LOCATION:${partyDetails!.party_details.address}`,
-        `DESCRIPTION:${partyDetails!.calendar_details.details || ''}`,
+        `DTSTART:${partyDetails.calendar_details.from}`,
+        `DTEND:${partyDetails.calendar_details.to}`,
+        `SUMMARY:${partyDetails.calendar_details.details}`,
+        `LOCATION:${partyDetails.party_details.address}`,
+        `DESCRIPTION:${partyDetails.calendar_details.details || ''}`,
         'STATUS:CONFIRMED',
         'END:VEVENT',
         'END:VCALENDAR',

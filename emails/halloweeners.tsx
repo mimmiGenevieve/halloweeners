@@ -13,6 +13,7 @@ import {
 import { PartyDetailsRow, CalendarDetailsRow } from '@/lib/types/details'
 
 type ConfirmationEmailProps = {
+    userToken: string
     name: string
     prize?: string
     companionName?: string
@@ -65,6 +66,7 @@ function buildGoogleCalendarUrl(details: ConfirmationEmailProps['details']) {
 }
 
 export default function ConfirmationEmail({
+    userToken,
     name,
     prize,
     companionName,
@@ -178,6 +180,7 @@ export default function ConfirmationEmail({
 }
 
 ConfirmationEmail.PreviewProps = {
+    userToken: 'abc123',
     name: 'Mimmi',
     prize: 'Scariest',
     companionName: 'Sebastian',

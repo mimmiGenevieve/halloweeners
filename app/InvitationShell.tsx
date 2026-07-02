@@ -31,9 +31,13 @@ export default function InvitationShell({
                     isAuthenticated={isAuthenticated}
                     isAdmin={isAdmin}
                 />
-                {isAuthenticated ? (
+                {isLoading ? (
                     <div className="flex flex-col bg-(--background)/60 p-[50px] mt-10 lg:mt-12 gap-2 w-full lg:w-200  overflow-y-auto no-scrollbar text-base">
-                        {isLoading ? <LoadingSkeleton /> : children}
+                        <LoadingSkeleton />
+                    </div>
+                ) : isAuthenticated ? (
+                    <div className="flex flex-col bg-(--background)/60 p-[50px] mt-10 lg:mt-12 gap-2 w-full lg:w-200  overflow-y-auto no-scrollbar text-base">
+                        {children}
                     </div>
                 ) : (
                     <div className="flex flex-col bg-(--background)/60 p-[50px] mt-10 lg:mt-12 gap-2 w-full lg:w-200 lg:h-110 overflow-y-auto no-scrollbar text-base">
