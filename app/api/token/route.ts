@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { INVITE_COOKIE_NAME } from '@/lib/constants'
 import {
-    INVITE_COOKIE_NAME,
-    isValidGuestToken,
-    normalizeNextPath,
     sanitizeInviteToken,
+    normalizeNextPath,
+    isValidGuestToken,
     withAuthError,
-} from '@/lib/queries/guest-auth'
+} from '@/lib/helpers'
+import { NextRequest, NextResponse } from 'next/server'
 
 const cookieMaxAgeSeconds = 60 * 60 * 24 * 45
 

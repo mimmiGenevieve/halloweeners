@@ -1,4 +1,4 @@
-import { getAuthenticatedGuestToken } from '@/lib/helpers'
+import { getAuthenticatedGuestToken } from '@/app/auth/actions'
 import {
     fetchGuestsForAdminForm,
     fetchPrizesForAdminForm,

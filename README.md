@@ -1,10 +1,10 @@
 # 🕯️ The Halloweeners — RSVP Portal
 
-> *An invitation is not sent. It is summoned.*
+> _An invitation is not sent. It is summoned._
 
 A ceremonial, token-gated RSVP site for **The Halloweeners** — no accounts, no passwords, just a personal invite link tied to your name.
 
-Live at [halloweeners.vercel.app](https://halloweeners.vercel.app).
+Live at [halloweeners.se](https://halloweeners.se).
 
 ## ✨ Features
 
@@ -16,14 +16,14 @@ Live at [halloweeners.vercel.app](https://halloweeners.vercel.app).
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Framework | [Next.js](https://nextjs.org/) 16 (App Router) + React 19 |
-| Hosting | [Vercel](https://vercel.com/) |
-| Database | [Neon](https://neon.tech/) Postgres, via `@neondatabase/serverless` |
-| Email | [Resend](https://resend.com/) + `@react-email/components` |
-| Styling | Tailwind CSS 4 |
-| Auth | Custom token-based cookie auth (no third-party auth provider) |
+| Layer     | Technology                                                          |
+| --------- | ------------------------------------------------------------------- |
+| Framework | [Next.js](https://nextjs.org/) 16 (App Router) + React 19           |
+| Hosting   | [Vercel](https://vercel.com/)                                       |
+| Database  | [Neon](https://neon.tech/) Postgres, via `@neondatabase/serverless` |
+| Email     | [Resend](https://resend.com/) + `@react-email/components`           |
+| Styling   | Tailwind CSS 4                                                      |
+| Auth      | Custom token-based cookie auth (no third-party auth provider)       |
 
 ## 🚀 Getting Started
 
@@ -122,4 +122,4 @@ Make sure `DATABASE_URL`, `RESEND_API_KEY`, and `ADMIN_GUEST_TOKENS` are set in 
 
 ---
 
-*Gather your courage. The Halloweeners await.*
+_Gather your courage. The Halloweeners await._

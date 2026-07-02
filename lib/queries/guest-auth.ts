@@ -17,24 +17,6 @@ export type RsvpData = {
     cipher_answer?: string | null
 }
 
-export async function isValidGuestToken(
-    rawToken: string | null | undefined
-): Promise<GuestLookupRow | null> {
-    const token = sanitizeInviteToken(rawToken)
-
-    if (!token) {
-        return null
-    }
-
-    try {
-        const guest = await findGuestByToken(token)
-        return guest
-    } catch (error) {
-        console.error('Guest token validation failed:', error)
-        return null
-    }
-}
-
 export async function fetchGuestRsvpData(
     guestId: string | null
 ): Promise<RsvpData | null> {
@@ -58,7 +40,9 @@ export async function fetchGuestRsvpData(
     }
 }
 
-async function findGuestByToken(token: string): Promise<GuestLookupRow | null> {
+export async function findGuestByToken(
+    token: string
+): Promise<GuestLookupRow | null> {
     cacheLife('minutes')
     try {
         const result = await sql`

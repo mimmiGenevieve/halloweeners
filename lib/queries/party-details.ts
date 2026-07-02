@@ -1,25 +1,7 @@
 'use cache'
 import { sql } from '@/lib/neon'
 import { cacheLife } from 'next/cache'
-
-export type PartyInfo = {
-    party_details: {
-        date: Date
-        start: string
-        end: string
-        address: string
-        address_extra: string | null
-    }
-    email_details: {
-        from: string
-        subject: string
-    }
-    calendar_details: {
-        from: string
-        to: string
-        details: string | null
-    }
-}
+import { PartyInfo } from '../types/details'
 
 export async function fetchPartyInfoAndEmailDetails(): Promise<PartyInfo | null> {
     cacheLife('minutes')

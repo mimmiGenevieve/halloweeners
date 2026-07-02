@@ -1,5 +1,4 @@
 import { getAuthenticatedGuestToken } from '@/app/auth/actions'
-import { fetchGuestRsvpData } from '@/lib/queries/guest-auth'
 import { fetchPartyInfoAndEmailDetails } from '@/lib/queries/party-details'
 import { fetchGuestPreviousYearPrizes } from '@/lib/queries/winners'
 
@@ -9,8 +8,7 @@ export async function GET() {
         return new Response(JSON.stringify(null), { status: 200 })
     }
 
-    const [existingRsvp, prize, partyDetails] = await Promise.all([
-        fetchGuestRsvpData(user.id),
+    const [prize, partyDetails] = await Promise.all([
         fetchGuestPreviousYearPrizes(user.id),
         fetchPartyInfoAndEmailDetails(),
     ])
@@ -19,12 +17,10 @@ export async function GET() {
         JSON.stringify({
             user: {
                 id: user.id,
-                name: user.name,
                 is_admin: user.is_admin,
             },
-            existingRsvp,
             prize,
-            partyDetails,
+            partyDetails: partyDetails?.party_details,
         }),
         {
             status: 200,

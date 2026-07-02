@@ -2,13 +2,27 @@
 
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { isValidGuestToken } from '@/lib/queries/guest-auth'
 import { INVITE_COOKIE_NAME } from '@/lib/constants'
 import {
     sanitizeInviteToken,
     normalizeNextPath,
     withAuthError,
+    isValidGuestToken,
+    normalizeToken,
 } from '@/lib/helpers'
+import { GuestLookupRow } from '@/lib/queries/guest-auth'
+
+export async function getAuthenticatedGuestToken(): Promise<GuestLookupRow | null> {
+    const cookieStore = await cookies()
+    const token = normalizeToken(cookieStore.get(INVITE_COOKIE_NAME)?.value)
+
+    if (!token) {
+        return null
+    }
+
+    const user = await isValidGuestToken(token)
+    return user
+}
 
 const cookieMaxAgeSeconds = 60 * 60 * 24 * 45
 

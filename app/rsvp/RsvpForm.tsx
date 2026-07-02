@@ -3,7 +3,7 @@
 import { RsvpData } from '@/lib/queries/guest-auth'
 import { sendConfirmationEmail, submitRsvp } from './actions'
 import { useState } from 'react'
-import { PartyInfo } from '@/lib/queries/party-details'
+import { PartyInfo } from '@/lib/types/details'
 
 type RsvpFormProps = {
     user: { id: string; name: string; token?: string } | null

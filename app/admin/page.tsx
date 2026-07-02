@@ -102,8 +102,9 @@ function AdminPageContent() {
                             <ul className="space-y-2 list-disc list-inside">
                                 {data.signedUpGuests.map((guest) => (
                                     <li key={guest.id}>
-                                        <strong>{guest.name}</strong> (
-                                        {guest.email})
+                                        <strong>{guest.name}</strong>
+                                        {guest.email ? ` (${guest.email})` : ''}
+
                                         <ul className="pl-5">
                                             {guest.bringing_plus_one && (
                                                 <li>

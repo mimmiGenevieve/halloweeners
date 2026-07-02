@@ -3,9 +3,9 @@
 import { sql } from '@/lib/neon'
 import { revalidatePath } from 'next/cache'
 import { Resend } from 'resend'
-import { confirmationEmailHtml } from './emailTemplate'
-import { PartyInfo } from '@/lib/queries/party-details'
-import { getAuthenticatedGuestToken } from '@/lib/helpers'
+import ConfirmationEmail from '../../emails/halloweeners'
+import { getAuthenticatedGuestToken } from '../auth/actions'
+import { PartyInfo } from '@/lib/types/details'
 
 const EMAIL_MAX_LENGTH = 320
 const NAME_MAX_LENGTH = 120
@@ -110,11 +110,11 @@ export async function sendConfirmationEmail(
         from: partyDetails.email_details.from,
         to: email,
         subject: partyDetails.email_details.subject,
-        html: await confirmationEmailHtml({
+        react: ConfirmationEmail({
             name,
             companionName,
             prize,
-            partyDetails,
+            details: partyDetails,
         }),
     })
 }

@@ -1,8 +1,9 @@
 'use server'
 
-import { getAuthenticatedGuestToken, isGuestAdmin } from '@/lib/helpers'
+import { isGuestAdmin } from '@/lib/helpers'
 import { sql } from '@/lib/neon'
 import { revalidatePath } from 'next/cache'
+import { getAuthenticatedGuestToken } from '../auth/actions'
 
 const NOTES_MAX_LENGTH = 250
 const UUID_REGEX =

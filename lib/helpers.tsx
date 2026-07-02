@@ -1,11 +1,9 @@
-import { cookies } from 'next/headers'
 import {
     ADMIN_TOKENS_ENV,
     TOKEN_MAX_LENGTH,
     TOKEN_ALLOWED_PATTERN,
-    INVITE_COOKIE_NAME,
 } from './constants'
-import { GuestLookupRow, isValidGuestToken } from './queries/guest-auth'
+import { findGuestByToken, GuestLookupRow } from './queries/guest-auth'
 
 export function isMissingRelationError(error: unknown): boolean {
     if (!(error instanceof Error)) {
@@ -89,42 +87,20 @@ export function withAuthError(path: string, errorCode: string): string {
     return `${path}${separator}authError=${encodeURIComponent(errorCode)}`
 }
 
-export function formatPartyDate(date: Date): string {
-    const months = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
-    ]
-    const day = date.getDate()
-    const month = months[date.getMonth()]
-    const year = date.getFullYear()
-
-    const suffix = (n: number) => {
-        const s = ['th', 'st', 'nd', 'rd']
-        const v = n % 100
-        return s[(v - 20) % 10] || s[v] || s[0]
-    }
-
-    return `${month} ${day}${suffix(day)}, ${year}.`
-}
-
-export async function getAuthenticatedGuestToken(): Promise<GuestLookupRow | null> {
-    const cookieStore = await cookies()
-    const token = normalizeToken(cookieStore.get(INVITE_COOKIE_NAME)?.value)
+export async function isValidGuestToken(
+    rawToken: string | null | undefined
+): Promise<GuestLookupRow | null> {
+    const token = sanitizeInviteToken(rawToken)
 
     if (!token) {
         return null
     }
 
-    const user = await isValidGuestToken(token)
-    return user
+    try {
+        const guest = await findGuestByToken(token)
+        return guest
+    } catch (error) {
+        console.error('Guest token validation failed:', error)
+        return null
+    }
 }

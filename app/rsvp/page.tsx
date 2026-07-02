@@ -6,9 +6,9 @@ import { RsvpData } from '@/lib/queries/guest-auth'
 import RsvpForm from './RsvpForm'
 import { useSearchParams } from 'next/navigation'
 import { useAdminStatusCache } from '@/lib/auth-cache'
-import { PartyInfo } from '@/lib/queries/party-details'
+import { PartyInfo } from '@/lib/types/details'
 
-type RsvpDataResponse = {
+export type RsvpDataResponse = {
     user: { id: string; name: string; is_admin?: boolean } | null
     existingRsvp: RsvpData | null
     prize?: string

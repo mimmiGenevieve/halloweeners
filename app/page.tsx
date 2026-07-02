@@ -1,45 +1,92 @@
-import { fetchGuestPreviousYearPrizes } from '@/lib/queries/winners'
+'use client'
 import InvitationShell from './InvitationShell'
-import { redirect } from 'next/navigation'
-import { fetchPartyInfoAndEmailDetails } from '@/lib/queries/party-details'
+import { useSearchParams } from 'next/navigation'
 import { BoldText } from '@/lib/bold'
-import {
-    formatPartyDate,
-    getAuthenticatedGuestToken,
-    isGuestAdmin,
-} from '@/lib/helpers'
+import { useAdminStatusCache } from '@/lib/auth-cache'
+import { useState, useRef, useEffect, Suspense } from 'react'
+import { PartyDetailsRow } from '@/lib/types/details'
 
-type HomePageProps = {
-    searchParams: Promise<{
-        token?: string
-        authError?: string
-    }>
-}
+export type DetailsDataResponse = {
+    user: { id: string; is_admin?: boolean } | null
+    prize?: string
+    partyDetails: PartyDetailsRow
+} | null
 
-export default async function Home({ searchParams }: HomePageProps) {
-    const { token, authError } = await searchParams
+export function formatPartyDate(date: Date | string): string {
+    const d = date instanceof Date ? date : new Date(date)
+    const months = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
+    ]
+    const day = d.getDate()
+    const month = months[d.getMonth()]
+    const year = d.getFullYear()
 
-    if (token) {
-        redirect(`/auth/token?token=${encodeURIComponent(token)}&next=/`)
+    const suffix = (n: number) => {
+        const s = ['th', 'st', 'nd', 'rd']
+        const v = n % 100
+        return s[(v - 20) % 10] || s[v] || s[0]
     }
 
-    const authenticatedToken = await getAuthenticatedGuestToken()
-    const isAdmin = isGuestAdmin(authenticatedToken)
+    return `${month} ${day}${suffix(day)}, ${year}.`
+}
 
-    const previousYearPrize = authenticatedToken
-        ? await fetchGuestPreviousYearPrizes(authenticatedToken.id)
-        : null
+function DetailsPageContent() {
+    const searchParams = useSearchParams()
+    const token = searchParams?.get('token')
+    const [data, setData] = useState<DetailsDataResponse>(null)
+    const [loading, setLoading] = useState(true)
+    const [cachedIsAdmin, updateAdminStatus] = useAdminStatusCache()
+    const hasFetched = useRef(false)
 
-    const partyDetails = await fetchPartyInfoAndEmailDetails()
+    useEffect(() => {
+        if (hasFetched.current) return
+
+        if (token) {
+            window.location.href = `/auth/token?token=${encodeURIComponent(token)}&next=/rsvp`
+            return
+        }
+
+        hasFetched.current = true
+        const fetchData = async () => {
+            const response = await fetch('/api/details-data')
+            const result = await response.json()
+            setData(result)
+            setLoading(false)
+            if (result?.user.is_admin !== undefined) {
+                updateAdminStatus(result.user.is_admin)
+            }
+            if (!result?.user.id) {
+                window.location.href = '/'
+            }
+        }
+        fetchData()
+    }, [token])
+
+    if (token) {
+        return null
+    }
+
+    const isAdmin = data?.user?.is_admin ?? cachedIsAdmin
 
     return (
         <InvitationShell
             activePage="details"
-            isAuthenticated={!!authenticatedToken}
+            isAuthenticated={true}
+            isLoading={loading}
             isAdmin={isAdmin}
-            authError={authError}
         >
-            {previousYearPrize && (
+            {data?.prize && (
                 <div className="border border-fuchsia-300/50 bg-fuchsia-300/10 rounded p-4 mb-8 text-left flex flex-col gap-4">
                     <p className="moontime lg:text-7xl text-5xl text-center">
                         Honored champion of last year
@@ -47,8 +94,8 @@ export default async function Home({ searchParams }: HomePageProps) {
                     <p>
                         Your triumph at last year's gathering has not been
                         forgotten. As the reigning master of{' '}
-                        <span className="font-bold">{previousYearPrize}</span>,
-                        your legacy is secure—but your reign must end, for a new
+                        <span className="font-bold">{data.prize}</span>, your
+                        legacy is secure—but your reign must end, for a new
                         master shall be crowned this year.
                     </p>
 
@@ -68,20 +115,18 @@ export default async function Home({ searchParams }: HomePageProps) {
                 Essential Details for the Night
             </p>
 
-            {partyDetails?.party_details && (
+            {data?.partyDetails && (
                 <div className="flex flex-col">
+                    <span>Date: {formatPartyDate(data.partyDetails.date)}</span>
                     <span>
-                        Date: {formatPartyDate(partyDetails.party_details.date)}
+                        Time: {data.partyDetails.start}
+                        {data.partyDetails.end &&
+                            ` to ${data.partyDetails.end}`}
                     </span>
                     <span>
-                        Time: {partyDetails.party_details.start}
-                        {partyDetails.party_details.end &&
-                            ` to ${partyDetails.party_details.end}`}
-                    </span>
-                    <span>
-                        Location: {partyDetails.party_details.address}.{' '}
+                        Location: {data.partyDetails.address}.{' '}
                         <a
-                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(partyDetails.party_details.address)}`}
+                            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(data.partyDetails.address)}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="underline"
@@ -89,11 +134,9 @@ export default async function Home({ searchParams }: HomePageProps) {
                             Directions.
                         </a>
                     </span>
-                    {partyDetails.party_details.address_extra && (
+                    {data.partyDetails.address_extra && (
                         <i>
-                            <BoldText
-                                text={partyDetails.party_details.address_extra}
-                            />
+                            <BoldText text={data.partyDetails.address_extra} />
                         </i>
                     )}
                 </div>
@@ -117,5 +160,13 @@ export default async function Home({ searchParams }: HomePageProps) {
                 The night awaits you; let the shadows guide your way.
             </p>
         </InvitationShell>
+    )
+}
+
+export default function DetailsPage() {
+    return (
+        <Suspense fallback={null}>
+            <DetailsPageContent />
+        </Suspense>
     )
 }
