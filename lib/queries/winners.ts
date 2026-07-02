@@ -1,4 +1,7 @@
+'use cache'
 import { sql } from '@/lib/neon'
+import { getPreviousYear, isMissingRelationError } from '../helpers'
+import { cacheLife } from 'next/cache'
 
 export type GuestOption = {
     id: string
@@ -27,21 +30,11 @@ export type WinnerRow = {
     notes: string | null
 }
 
-function isMissingRelationError(error: unknown): boolean {
-    if (!(error instanceof Error)) {
-        return false
-    }
-    return /relation .* does not exist/i.test(error.message)
-}
-
-export function getPreviousYear(year = new Date().getFullYear()): number {
-    return year - 1
-}
-
 export async function fetchGuestPreviousYearPrizes(
-    guestId: string,
-    year = getPreviousYear()
+    guestId: string
 ): Promise<string | undefined> {
+    cacheLife('minutes')
+    const year = getPreviousYear()
     try {
         const result = await sql`
             SELECT pc.name
@@ -63,7 +56,9 @@ export async function fetchGuestPreviousYearPrizes(
     }
 }
 
-export async function fetchWinnersByYear(year: number): Promise<WinnerRow[]> {
+export async function fetchWinnersByYear(): Promise<WinnerRow[]> {
+    cacheLife('minutes')
+    const year = getPreviousYear()
     try {
         const result = await sql`
             SELECT
@@ -89,6 +84,7 @@ export async function fetchWinnersByYear(year: number): Promise<WinnerRow[]> {
 }
 
 export async function fetchGuestsForAdminForm(): Promise<GuestOption[]> {
+    cacheLife('minutes')
     const result = await sql`
         SELECT id, name
         FROM guests
@@ -100,6 +96,7 @@ export async function fetchGuestsForAdminForm(): Promise<GuestOption[]> {
 export async function fetchSignedUpGuestsForAdminPage(): Promise<
     SignedUpGuestOption[]
 > {
+    cacheLife('minutes')
     const result = await sql`
         SELECT g.*, r.*
         FROM guests g
@@ -110,6 +107,7 @@ export async function fetchSignedUpGuestsForAdminPage(): Promise<
 }
 
 export async function fetchPrizesForAdminForm(): Promise<PrizeOption[]> {
+    cacheLife('minutes')
     try {
         const result = await sql`
             SELECT id, name

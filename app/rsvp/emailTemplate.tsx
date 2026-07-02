@@ -1,4 +1,4 @@
-import { PartyInfo } from '@/lib/party-details'
+import { PartyInfo } from '@/lib/queries/party-details'
 
 export async function confirmationEmailHtml({
     name,

@@ -1,6 +1,6 @@
 'use server'
 
-import { getAuthenticatedGuestToken, isGuestAdmin } from '@/lib/guest-auth'
+import { getAuthenticatedGuestToken, isGuestAdmin } from '@/lib/helpers'
 import { sql } from '@/lib/neon'
 import { revalidatePath } from 'next/cache'
 

@@ -1,9 +1,7 @@
-import {
-    getAuthenticatedGuestToken,
-    fetchGuestRsvpData,
-} from '@/lib/guest-auth'
-import { fetchPartyInfoAndEmailDetails } from '@/lib/party-details'
-import { fetchGuestPreviousYearPrizes, getPreviousYear } from '@/lib/winners'
+import { getAuthenticatedGuestToken } from '@/lib/helpers'
+import { fetchGuestRsvpData } from '@/lib/queries/guest-auth'
+import { fetchPartyInfoAndEmailDetails } from '@/lib/queries/party-details'
+import { fetchGuestPreviousYearPrizes } from '@/lib/queries/winners'
 
 export async function GET() {
     const user = await getAuthenticatedGuestToken()
@@ -13,7 +11,7 @@ export async function GET() {
 
     const [existingRsvp, prize, partyDetails] = await Promise.all([
         fetchGuestRsvpData(user.id),
-        fetchGuestPreviousYearPrizes(user.id, getPreviousYear()),
+        fetchGuestPreviousYearPrizes(user.id),
         fetchPartyInfoAndEmailDetails(),
     ])
 

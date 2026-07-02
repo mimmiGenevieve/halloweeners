@@ -1,11 +1,10 @@
-import { getAuthenticatedGuestToken } from '@/lib/guest-auth'
+import { getAuthenticatedGuestToken } from '@/lib/helpers'
 import {
     fetchGuestsForAdminForm,
     fetchPrizesForAdminForm,
     fetchSignedUpGuestsForAdminPage,
     fetchWinnersByYear,
-    getPreviousYear,
-} from '@/lib/winners'
+} from '@/lib/queries/winners'
 
 export async function GET() {
     const user = await getAuthenticatedGuestToken()
@@ -18,7 +17,7 @@ export async function GET() {
             fetchGuestsForAdminForm(),
             fetchSignedUpGuestsForAdminPage(),
             fetchPrizesForAdminForm(),
-            fetchWinnersByYear(getPreviousYear()),
+            fetchWinnersByYear(),
         ])
 
     return new Response(

@@ -3,7 +3,7 @@
 import { useState, useEffect, Suspense, useRef } from 'react'
 import InvitationShell from '../InvitationShell'
 import WinnersRegistry from './winnersRegistry'
-import { GuestOption, PrizeOption, WinnerRow } from '@/lib/winners'
+import { GuestOption, PrizeOption, WinnerRow } from '@/lib/queries/winners'
 import { useSearchParams } from 'next/navigation'
 import { useAdminStatusCache } from '@/lib/auth-cache'
 
@@ -79,16 +79,19 @@ function AdminPageContent() {
 
                     <p className="text-center mb-8">
                         {data.signedUpGuests.length +
-                            data.signedUpGuests.filter((guest) => guest.bringing_plus_one)
-                                .length}{' '}
+                            data.signedUpGuests.filter(
+                                (guest) => guest.bringing_plus_one
+                            ).length}{' '}
                         souls (
                         {
-                            data.signedUpGuests.filter((guest) => guest.bringing_plus_one)
-                                .length
+                            data.signedUpGuests.filter(
+                                (guest) => guest.bringing_plus_one
+                            ).length
                         }{' '}
                         plus one
-                        {data.signedUpGuests.filter((guest) => guest.bringing_plus_one)
-                            .length > 1
+                        {data.signedUpGuests.filter(
+                            (guest) => guest.bringing_plus_one
+                        ).length > 1
                             ? 's'
                             : ''}
                         ) have pledged to attend the gathering.
@@ -99,14 +102,19 @@ function AdminPageContent() {
                             <ul className="space-y-2 list-disc list-inside">
                                 {data.signedUpGuests.map((guest) => (
                                     <li key={guest.id}>
-                                        <strong>{guest.name}</strong> ({guest.email})
+                                        <strong>{guest.name}</strong> (
+                                        {guest.email})
                                         <ul className="pl-5">
                                             {guest.bringing_plus_one && (
-                                                <li>Bringing: {guest.plus_one_name}</li>
+                                                <li>
+                                                    Bringing:{' '}
+                                                    {guest.plus_one_name}
+                                                </li>
                                             )}
                                             {guest.cipher_answer && (
                                                 <li>
-                                                    Cipher answer: {guest.cipher_answer}
+                                                    Cipher answer:{' '}
+                                                    {guest.cipher_answer}
                                                 </li>
                                             )}
                                         </ul>

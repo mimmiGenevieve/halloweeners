@@ -2,11 +2,11 @@
 
 import { useState, useEffect, Suspense, useRef } from 'react'
 import InvitationShell from '../InvitationShell'
-import { RsvpData } from '@/lib/guest-auth'
+import { RsvpData } from '@/lib/queries/guest-auth'
 import RsvpForm from './RsvpForm'
 import { useSearchParams } from 'next/navigation'
 import { useAdminStatusCache } from '@/lib/auth-cache'
-import { PartyInfo } from '@/lib/party-details'
+import { PartyInfo } from '@/lib/queries/party-details'
 
 type RsvpDataResponse = {
     user: { id: string; name: string; is_admin?: boolean } | null

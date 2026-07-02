@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { addCurrentYearWinners } from './actions'
-import type { GuestOption, PrizeOption } from '@/lib/winners'
+import type { GuestOption, PrizeOption } from '@/lib/queries/winners'
 
 type WinnersAdminFormProps = {
     guests: GuestOption[]

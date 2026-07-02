@@ -1,4 +1,6 @@
+'use cache'
 import { sql } from '@/lib/neon'
+import { cacheLife } from 'next/cache'
 
 export type PartyInfo = {
     party_details: {
@@ -19,35 +21,8 @@ export type PartyInfo = {
     }
 }
 
-export function formatPartyDate(date: Date): string {
-    const months = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
-    ]
-    const day = date.getDate()
-    const month = months[date.getMonth()]
-    const year = date.getFullYear()
-
-    const suffix = (n: number) => {
-        const s = ['th', 'st', 'nd', 'rd']
-        const v = n % 100
-        return s[(v - 20) % 10] || s[v] || s[0]
-    }
-
-    return `${month} ${day}${suffix(day)}, ${year}.`
-}
-
 export async function fetchPartyInfoAndEmailDetails(): Promise<PartyInfo | null> {
+    cacheLife('minutes')
     try {
         const res = await sql`
             SELECT party_info.date AS d_date, party_info.start_time AS d_start, party_info.end_time AS d_end,

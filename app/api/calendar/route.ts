@@ -1,4 +1,4 @@
-import { fetchPartyInfoAndEmailDetails } from '@/lib/party-details'
+import { fetchPartyInfoAndEmailDetails } from '@/lib/queries/party-details'
 import { NextResponse } from 'next/server'
 
 export async function GET() {

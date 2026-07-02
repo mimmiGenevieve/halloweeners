@@ -1,9 +1,9 @@
 'use client'
 
-import { RsvpData } from '@/lib/guest-auth'
+import { RsvpData } from '@/lib/queries/guest-auth'
 import { sendConfirmationEmail, submitRsvp } from './actions'
 import { useState } from 'react'
-import { PartyInfo } from '@/lib/party-details'
+import { PartyInfo } from '@/lib/queries/party-details'
 
 type RsvpFormProps = {
     user: { id: string; name: string; token?: string } | null

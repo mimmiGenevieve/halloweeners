@@ -1,6 +1,6 @@
 'use client'
 
-import { GuestOption, PrizeOption, WinnerRow } from '@/lib/winners'
+import { GuestOption, PrizeOption, WinnerRow } from '@/lib/queries/winners'
 import WinnersAdminForm from './WinnersAdminForm'
 import { useState } from 'react'
 

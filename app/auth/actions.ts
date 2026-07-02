@@ -2,13 +2,13 @@
 
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
+import { isValidGuestToken } from '@/lib/queries/guest-auth'
+import { INVITE_COOKIE_NAME } from '@/lib/constants'
 import {
-    INVITE_COOKIE_NAME,
-    isValidGuestToken,
-    normalizeNextPath,
     sanitizeInviteToken,
+    normalizeNextPath,
     withAuthError,
-} from '@/lib/guest-auth'
+} from '@/lib/helpers'
 
 const cookieMaxAgeSeconds = 60 * 60 * 24 * 45
 

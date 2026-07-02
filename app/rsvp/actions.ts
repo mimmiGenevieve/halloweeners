@@ -2,10 +2,10 @@
 
 import { sql } from '@/lib/neon'
 import { revalidatePath } from 'next/cache'
-import { getAuthenticatedGuestToken } from '@/lib/guest-auth'
 import { Resend } from 'resend'
 import { confirmationEmailHtml } from './emailTemplate'
-import { PartyInfo } from '@/lib/party-details'
+import { PartyInfo } from '@/lib/queries/party-details'
+import { getAuthenticatedGuestToken } from '@/lib/helpers'
 
 const EMAIL_MAX_LENGTH = 320
 const NAME_MAX_LENGTH = 120

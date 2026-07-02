@@ -1,12 +1,13 @@
-import { fetchGuestPreviousYearPrizes, getPreviousYear } from '@/lib/winners'
+import { fetchGuestPreviousYearPrizes } from '@/lib/queries/winners'
 import InvitationShell from './InvitationShell'
 import { redirect } from 'next/navigation'
-import { getAuthenticatedGuestToken, isGuestAdmin } from '@/lib/guest-auth'
-import {
-    fetchPartyInfoAndEmailDetails,
-    formatPartyDate,
-} from '@/lib/party-details'
+import { fetchPartyInfoAndEmailDetails } from '@/lib/queries/party-details'
 import { BoldText } from '@/lib/bold'
+import {
+    formatPartyDate,
+    getAuthenticatedGuestToken,
+    isGuestAdmin,
+} from '@/lib/helpers'
 
 type HomePageProps = {
     searchParams: Promise<{
@@ -25,12 +26,8 @@ export default async function Home({ searchParams }: HomePageProps) {
     const authenticatedToken = await getAuthenticatedGuestToken()
     const isAdmin = isGuestAdmin(authenticatedToken)
 
-    const previousYear = getPreviousYear()
     const previousYearPrize = authenticatedToken
-        ? await fetchGuestPreviousYearPrizes(
-              authenticatedToken.id,
-              previousYear
-          )
+        ? await fetchGuestPreviousYearPrizes(authenticatedToken.id)
         : null
 
     const partyDetails = await fetchPartyInfoAndEmailDetails()

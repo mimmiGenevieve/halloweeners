@@ -5,7 +5,7 @@ import {
     normalizeNextPath,
     sanitizeInviteToken,
     withAuthError,
-} from '@/lib/guest-auth'
+} from '@/lib/queries/guest-auth'
 
 const cookieMaxAgeSeconds = 60 * 60 * 24 * 45
 
