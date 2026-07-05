@@ -20,6 +20,7 @@ export default function InvitationShell({
     authError,
 }: InvitationShellProps) {
     const pathPrefix = activePage === 'details' ? '' : activePage
+    const fullWidth = isAuthenticated && activePage === 'admin'
 
     return (
         <div
@@ -31,22 +32,21 @@ export default function InvitationShell({
                     isAuthenticated={isAuthenticated}
                     isAdmin={isAdmin}
                 />
-                {isLoading ? (
-                    <div className="flex flex-col bg-(--background)/60 p-[50px] mt-10 lg:mt-12 gap-2 w-full lg:w-200  overflow-y-auto no-scrollbar text-base">
+
+                <div
+                    className={`flex flex-col bg-(--background)/60 p-[50px] mt-10 lg:mt-12 gap-2 w-full ${fullWidth ? '' : 'lg:w-200'} overflow-y-auto no-scrollbar text-base`}
+                >
+                    {isLoading ? (
                         <LoadingSkeleton />
-                    </div>
-                ) : isAuthenticated ? (
-                    <div className="flex flex-col bg-(--background)/60 p-[50px] mt-10 lg:mt-12 gap-2 w-full lg:w-200  overflow-y-auto no-scrollbar text-base">
-                        {children}
-                    </div>
-                ) : (
-                    <div className="flex flex-col bg-(--background)/60 p-[50px] mt-10 lg:mt-12 gap-2 w-full lg:w-200 lg:h-110 overflow-y-auto no-scrollbar text-base">
+                    ) : isAuthenticated ? (
+                        children
+                    ) : (
                         <TokenAccessForm
                             nextPath={`/${pathPrefix}`}
                             authError={authError}
                         />
-                    </div>
-                )}
+                    )}
+                </div>
             </main>
             <footer className="text-sm text-center mt-12 mb-8 opacity-70 px-4">
                 <p>

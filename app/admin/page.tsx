@@ -2,10 +2,13 @@
 
 import { useState, useEffect, Suspense, useRef } from 'react'
 import InvitationShell from '../InvitationShell'
-import WinnersRegistry from './winnersRegistry'
+import LastYearWinners from './prevWinners'
 import { GuestOption, PrizeOption, WinnerRow } from '@/lib/queries/winners'
 import { useSearchParams } from 'next/navigation'
 import { useAdminStatusCache } from '@/lib/auth-cache'
+import WinnersRegistry from './addWinners'
+import AdminPageRSVPs from './rsvps'
+import InvitedGuests from './invitedGuests'
 
 type AdminDataResponse = {
     user: { id: string; name: string; is_admin?: boolean } | null
@@ -26,9 +29,27 @@ function AdminPageContent() {
     const searchParams = useSearchParams()
     const token = searchParams?.get('token')
     const [data, setData] = useState<AdminDataResponse>(null)
+    const [activeTab, setActiveTab] = useState<
+        'rsvps' | 'prevWinners' | 'addWinners' | 'invited'
+    >('invited')
     const [loading, setLoading] = useState(true)
     const [cachedIsAdmin, updateAdminStatus] = useAdminStatusCache()
     const hasFetched = useRef(false)
+
+    const fetchData = async () => {
+        const response = await fetch('/api/admin-data')
+        const result = await response.json()
+        setData(result)
+        setLoading(false)
+        if (result?.user?.is_admin !== undefined) {
+            updateAdminStatus(result.user.is_admin)
+        }
+        if (!result?.user) {
+            window.location.href = '/'
+        } else if (!result.user.is_admin) {
+            window.location.href = '/'
+        }
+    }
 
     useEffect(() => {
         if (hasFetched.current) return
@@ -39,20 +60,7 @@ function AdminPageContent() {
         }
 
         hasFetched.current = true
-        const fetchData = async () => {
-            const response = await fetch('/api/admin-data')
-            const result = await response.json()
-            setData(result)
-            setLoading(false)
-            if (result?.user?.is_admin !== undefined) {
-                updateAdminStatus(result.user.is_admin)
-            }
-            if (!result?.user) {
-                window.location.href = '/'
-            } else if (!result.user.is_admin) {
-                window.location.href = '/'
-            }
-        }
+
         fetchData()
     }, [token])
 
@@ -71,73 +79,77 @@ function AdminPageContent() {
             isLoading={loading}
             isAdmin={isAdmin}
         >
-            {!loading && data && (
-                <>
-                    <p
-                        className="lg:text-7xl text-5xl mt-4 font-bold moontime mb-5 text-center"
-                        data-testid="admin-heading"
+            <div
+                className="flex flex-wrap lg:justify-center gap-30"
+                data-testid="admin-page-content"
+            >
+                <div className="fmt-10 gap-10 lg:text-2xl text-xl select-none h-20 lg:h-full lg:w-75">
+                    <div
+                        className={`cursor-pointer ${activeTab === 'invited' ? 'underline' : ''}`}
+                        onClick={() => setActiveTab('invited')}
                     >
-                        Signed up Guests
-                    </p>
+                        Invited Guests
+                    </div>
+                    <div
+                        className={`cursor-pointer ${activeTab === 'rsvps' ? 'underline' : ''}`}
+                        onClick={() => setActiveTab('rsvps')}
+                    >
+                        RSVPs
+                    </div>
+                    <div
+                        className={`cursor-pointer ${activeTab === 'addWinners' || activeTab === 'prevWinners' ? 'underline' : ''}`}
+                        onClick={() => setActiveTab('prevWinners')}
+                    >
+                        Winners
+                    </div>
 
-                    <p className="text-center mb-8">
-                        {data.signedUpGuests.length +
-                            data.signedUpGuests.filter(
-                                (guest) => guest.bringing_plus_one
-                            ).length}{' '}
-                        souls (
-                        {
-                            data.signedUpGuests.filter(
-                                (guest) => guest.bringing_plus_one
-                            ).length
-                        }{' '}
-                        plus one
-                        {data.signedUpGuests.filter(
-                            (guest) => guest.bringing_plus_one
-                        ).length > 1
-                            ? 's'
-                            : ''}
-                        ) have pledged to attend the gathering.
-                    </p>
+                    {(activeTab === 'prevWinners' ||
+                        activeTab === 'addWinners') && (
+                        <>
+                            <div
+                                className={`ml-5 cursor-pointer ${activeTab === 'prevWinners' ? 'underline' : ''}`}
+                                onClick={() => setActiveTab('prevWinners')}
+                            >
+                                Previous Winners
+                            </div>
 
-                    {data.signedUpGuests.length > 0 ? (
-                        <div className="overflow-x-auto rounded">
-                            <ul className="space-y-2 list-disc list-inside">
-                                {data.signedUpGuests.map((guest) => (
-                                    <li key={guest.id}>
-                                        <strong>{guest.name}</strong>
-                                        {guest.email ? ` (${guest.email})` : ''}
-
-                                        <ul className="pl-5">
-                                            {guest.bringing_plus_one && (
-                                                <li>
-                                                    Bringing:{' '}
-                                                    {guest.plus_one_name}
-                                                </li>
-                                            )}
-                                            {guest.cipher_answer && (
-                                                <li>
-                                                    Cipher answer:{' '}
-                                                    {guest.cipher_answer}
-                                                </li>
-                                            )}
-                                        </ul>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    ) : (
-                        <p>No guests have signed up yet.</p>
+                            <div
+                                className={`ml-5 cursor-pointer ${activeTab === 'addWinners' ? 'underline' : ''}`}
+                                onClick={() => setActiveTab('addWinners')}
+                            >
+                                Register Winners
+                            </div>
+                        </>
                     )}
-
-                    <WinnersRegistry
-                        guests={data.guests}
-                        prizes={data.prizes}
-                        previousYearWinners={data.previousYearWinners}
-                        previousYear={previousYear}
-                    />
-                </>
-            )}
+                </div>
+                {!loading && data && (
+                    <div className="w-full lg:w-200">
+                        {activeTab === 'rsvps' && (
+                            <AdminPageRSVPs guests={data.signedUpGuests} />
+                        )}
+                        {activeTab === 'prevWinners' && (
+                            <LastYearWinners
+                                previousYearWinners={data.previousYearWinners}
+                                previousYear={previousYear}
+                            />
+                        )}
+                        {activeTab === 'addWinners' && (
+                            <WinnersRegistry
+                                guests={data.guests}
+                                prizes={data.prizes}
+                                previousYearWinners={data.previousYearWinners}
+                            />
+                        )}
+                        {activeTab === 'invited' && (
+                            <InvitedGuests
+                                guests={data.guests}
+                                winners={data.previousYearWinners}
+                                refetchCallback={fetchData}
+                            />
+                        )}
+                    </div>
+                )}
+            </div>
         </InvitationShell>
     )
 }

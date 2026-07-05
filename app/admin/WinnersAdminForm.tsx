@@ -31,7 +31,9 @@ export default function WinnersAdminForm({
         setSelectedGuestIds(values)
     }
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (
+        event: React.SyntheticEvent<HTMLFormElement>
+    ) => {
         event.preventDefault()
         setIsSubmitting(true)
         setMessage('')
@@ -62,7 +64,7 @@ export default function WinnersAdminForm({
     }
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 mt-6">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <label className="flex flex-col gap-2">
                 Guests (multi-select)
                 <select

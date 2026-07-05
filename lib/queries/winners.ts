@@ -1,11 +1,12 @@
 'use cache'
 import { sql } from '@/lib/neon'
-import { cacheLife } from 'next/cache'
+import { cacheLife, cacheTag } from 'next/cache'
 import { getPreviousYear, isMissingRelationError } from '../helpers/misc'
 
 export type GuestOption = {
     id: string
     name: string
+    token: string
 }
 
 export type SignedUpGuestOption = {
@@ -85,8 +86,9 @@ export async function fetchWinnersByYear(): Promise<WinnerRow[]> {
 
 export async function fetchGuestsForAdminForm(): Promise<GuestOption[]> {
     cacheLife('minutes')
+    cacheTag('admin-guests')
     const result = await sql`
-        SELECT id, name
+        SELECT id, name, token
         FROM guests
         ORDER BY name ASC
     `
@@ -97,6 +99,7 @@ export async function fetchSignedUpGuestsForAdminPage(): Promise<
     SignedUpGuestOption[]
 > {
     cacheLife('minutes')
+    cacheTag('admin-rsvps')
     const result = await sql`
         SELECT g.*, r.*
         FROM guests g

@@ -8,7 +8,7 @@ import {
 
 export async function GET() {
     const user = await getAuthenticatedGuestToken()
-    if (!user) {
+    if (!user || !user.is_admin) {
         return new Response(JSON.stringify(null), { status: 200 })
     }
 

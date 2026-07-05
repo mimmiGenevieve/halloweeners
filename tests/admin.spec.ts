@@ -17,5 +17,5 @@ test('non-admin guest cannot reach admin data', async ({ page }) => {
 test('admin token can reach admin data', async ({ adminPage, detailsPage }) => {
     await adminPage.goto(ADMIN_TOKEN)
     await adminPage.adminLink.click()
-    await expect(adminPage.winnersHeading).toBeVisible()
+    await expect(adminPage.adminContent).toBeVisible()
 })
