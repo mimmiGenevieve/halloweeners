@@ -5,10 +5,11 @@
     "scripts": {
         "dev": "next dev",
         "build": "next build",
+        "prebuild": "node scripts/before-build.js",
         "start": "next start",
         "lint": "eslint",
         "email": "email dev --dir emails",
-        "test": "vitest",
+        "test:unit": " vitest run",
         "test:e2e": "playwright test"
     },
     "dependencies": {
