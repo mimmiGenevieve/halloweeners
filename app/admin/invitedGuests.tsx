@@ -21,10 +21,8 @@ export default function InvitedGuests({
 }: InvitedGuestsProps) {
     const [uninvitedMsg, setUninvitedMsg] = useState('')
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const [formData, setFormData] = useState<FormDataType>({
-        name: '',
-        token: '',
-    })
+    const [name, setName] = useState('')
+
     function copyToClipboard(text: string) {
         navigator.clipboard.writeText(text)
     }
@@ -43,15 +41,14 @@ export default function InvitedGuests({
 
     async function invite() {
         setIsSubmitting(true)
+        const trimmedName = name.trim()
         const formDataObj = new FormData()
-
-        formDataObj.append('name', formData.name.trim())
-        formDataObj.append('token', formData.token.trim())
+        formDataObj.append('name', trimmedName)
 
         await inviteGuest(formDataObj)
-            .then(() => {
+            .then((result) => {
                 refetchCallback()
-                setFormData({ name: '', token: '' })
+                setName('')
             })
             .catch((error) => {
                 console.error('Error inviting guest:', error)
@@ -59,10 +56,6 @@ export default function InvitedGuests({
             .finally(() => {
                 setIsSubmitting(false)
             })
-    }
-
-    const handleFormUpdate = (field: string, value: string | boolean) => {
-        setFormData((prev) => ({ ...prev, [field]: value }))
     }
 
     return (
@@ -103,7 +96,7 @@ export default function InvitedGuests({
                                     >
                                         <td className="p-3 w-[10px] lg:w-20">
                                             <button
-                                                className="hidden text-rose-400 border border-rose-300/50 bg-rose-300/10 rounded px-2 py-1 hover:bg-rose-400/70 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                                className="hidden lg:inline-block text-rose-400 border border-rose-300/50 bg-rose-300/10 rounded px-2 py-1 hover:bg-rose-400/70 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                                 disabled={
                                                     winners.find(
                                                         (winner) =>
@@ -145,7 +138,7 @@ export default function InvitedGuests({
                                             </button>
                                         </td>
                                         <td
-                                            className="p-3 cursor-pointer hover:underline w-8"
+                                            className="p-3 cursor-pointer hover:underline"
                                             onClick={() =>
                                                 copyToClipboard(guest.token)
                                             }
@@ -163,23 +156,7 @@ export default function InvitedGuests({
                                 ))}
                                 <tr>
                                     <td></td>
-                                    <td>
-                                        <input
-                                            className="p-3"
-                                            placeholder="Token"
-                                            type="text"
-                                            id="token"
-                                            name="token"
-                                            onChange={(e) =>
-                                                handleFormUpdate(
-                                                    'token',
-                                                    e.target.value
-                                                )
-                                            }
-                                            value={formData.token}
-                                            required
-                                        />
-                                    </td>
+                                    <td></td>
                                     <td>
                                         <input
                                             className="p-3"
@@ -188,22 +165,18 @@ export default function InvitedGuests({
                                             id="name"
                                             name="name"
                                             onChange={(e) =>
-                                                handleFormUpdate(
-                                                    'name',
-                                                    e.target.value
-                                                )
+                                                setName(e.target.value)
                                             }
-                                            value={formData.name}
+                                            value={name}
                                             required
                                         />
                                     </td>
                                     <td className="p-3">
                                         <button
-                                            className="hidden text-amber-400 border border-amber-300/50 bg-amber-300/10 rounded px-2 py-1 hover:bg-amber-400/70 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                            className="lg:inline-block text-amber-400 border border-amber-300/50 bg-amber-300/10 rounded px-2 py-1 hover:bg-amber-400/70 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                             onClick={invite}
                                             disabled={
-                                                formData.name.length === 0 ||
-                                                formData.token.length === 0 ||
+                                                name.length === 0 ||
                                                 isSubmitting
                                             }
                                         >
@@ -213,8 +186,7 @@ export default function InvitedGuests({
                                             className="lg:hidden text-amber-400 border border-amber-300/50 bg-amber-300/10 rounded px-2 py-1 hover:bg-amber-400/70 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                                             onClick={invite}
                                             disabled={
-                                                formData.name.length === 0 ||
-                                                formData.token.length === 0 ||
+                                                name.length === 0 ||
                                                 isSubmitting
                                             }
                                         >

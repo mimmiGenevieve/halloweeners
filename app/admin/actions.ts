@@ -4,6 +4,7 @@ import { sql } from '@/lib/neon'
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { getAuthenticatedGuestToken } from '../auth/actions'
 import { isGuestAdmin } from '@/lib/helpers/valid-token'
+import { generateUniqueGuestToken } from '@/lib/token-generator'
 
 const NOTES_MAX_LENGTH = 250
 const UUID_REGEX =
@@ -113,12 +114,16 @@ export async function inviteGuest(formData: FormData) {
         throw new Error('Unauthorized')
     }
 
-    if (!formData.get('name') || !formData.get('token')) {
-        throw new Error('Select at least one guest')
+    const nameValue = formData.get('name')
+    const name = typeof nameValue === 'string' ? nameValue.trim() : ''
+    if (!name) {
+        throw new Error('Name is required')
     }
 
+    const token = await generateUniqueGuestToken()
+
     try {
-        await sql`INSERT INTO guests (name, token) VALUES (${formData.get('name')}, ${formData.get('token')})`
+        await sql`INSERT INTO guests (name, token) VALUES (${name}, ${token})`
     } catch (error) {
         console.error('Failed to invite guest:', error)
         throw error
@@ -129,8 +134,5 @@ export async function inviteGuest(formData: FormData) {
     revalidatePath('/admin')
     revalidatePath('/rsvp')
 
-    return {
-        success: true,
-        insertedCount: 1,
-    }
+    return { success: true, insertedCount: 1, token }
 }

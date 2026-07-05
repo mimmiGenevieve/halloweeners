@@ -80,10 +80,10 @@ function AdminPageContent() {
             isAdmin={isAdmin}
         >
             <div
-                className="flex flex-wrap lg:justify-center gap-30"
+                className="flex flex-wrap lg:justify-center gap-30 relative"
                 data-testid="admin-page-content"
             >
-                <div className="fmt-10 gap-10 lg:text-2xl text-xl select-none h-20 lg:h-full lg:w-75">
+                <div className="fmt-10 gap-10 lg:text-2xl text-xl select-none h-20 lg:h-full lg:w-75 lg:absolute lg:left-20">
                     <div
                         className={`cursor-pointer ${activeTab === 'invited' ? 'underline' : ''}`}
                         onClick={() => setActiveTab('invited')}
