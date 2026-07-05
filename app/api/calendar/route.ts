@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { fetchPartyInfoAndEmailDetails } from '@/lib/queries/party-details'
-import { isValidGuestToken } from '@/lib/helpers'
+import { isValidGuestToken } from '@/lib/helpers/valid-token'
 
 export async function GET(request: NextRequest) {
     const token = request.nextUrl.searchParams.get('token')

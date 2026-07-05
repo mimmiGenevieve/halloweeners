@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { normalizeToken, sanitizeInviteToken } from './helpers'
-import { formatPartyDate } from '@/app/page'
+import { formatPartyDate, normalizeToken, sanitizeInviteToken } from './misc'
 
 describe('normalizeToken', () => {
     it('lowercases and trims', () => {
@@ -19,11 +18,11 @@ describe('sanitizeInviteToken', () => {
     })
 
     it('rejects tokens with numbers', () => {
-        expect(sanitizeInviteToken('abc123')).toBe('')
+        expect(sanitizeInviteToken('abc123')).toBe(null)
     })
 
     it('rejects tokens over 200 characters', () => {
-        expect(sanitizeInviteToken('a'.repeat(201))).toBe('')
+        expect(sanitizeInviteToken('a'.repeat(201))).toBe(null)
     })
 })
 

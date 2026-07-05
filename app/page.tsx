@@ -5,41 +5,13 @@ import { BoldText } from '@/lib/bold'
 import { useAdminStatusCache } from '@/lib/auth-cache'
 import { useState, useEffect, Suspense } from 'react'
 import { PartyDetailsRow } from '@/lib/types/details'
+import { formatPartyDate } from '@/lib/helpers/misc'
 
 export type DetailsDataResponse = {
     user: { id: string; is_admin?: boolean } | null
     prize?: string
     partyDetails: PartyDetailsRow
 } | null
-
-export function formatPartyDate(date: Date | string): string {
-    const d = date instanceof Date ? date : new Date(date)
-    const months = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
-    ]
-    const day = d.getDate()
-    const month = months[d.getMonth()]
-    const year = d.getFullYear()
-
-    const suffix = (n: number) => {
-        const s = ['th', 'st', 'nd', 'rd']
-        const v = n % 100
-        return s[(v - 20) % 10] || s[v] || s[0]
-    }
-
-    return `${month} ${day}${suffix(day)}, ${year}.`
-}
 
 function DetailsPageContent() {
     const searchParams = useSearchParams()

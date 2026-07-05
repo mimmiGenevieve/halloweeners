@@ -1,7 +1,7 @@
 'use cache'
 import { sql } from '@/lib/neon'
-import { isMissingRelationError, sanitizeInviteToken } from '../helpers'
 import { cacheLife } from 'next/cache'
+import { isMissingRelationError } from '../helpers/misc'
 
 export type GuestLookupRow = {
     id: string

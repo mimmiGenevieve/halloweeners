@@ -1,7 +1,7 @@
 'use cache'
 import { sql } from '@/lib/neon'
-import { getPreviousYear, isMissingRelationError } from '../helpers'
 import { cacheLife } from 'next/cache'
+import { getPreviousYear, isMissingRelationError } from '../helpers/misc'
 
 export type GuestOption = {
     id: string

@@ -11,6 +11,7 @@ import {
 } from '@react-email/components'
 
 import { PartyDetailsRow, CalendarDetailsRow } from '@/lib/types/details'
+import { formatPartyDate } from '@/lib/helpers/misc'
 
 type ConfirmationEmailProps = {
     userToken: string
@@ -21,35 +22,6 @@ type ConfirmationEmailProps = {
         party_details: PartyDetailsRow
         calendar_details: CalendarDetailsRow
     }
-}
-
-function formatPartyDate(date: Date | string): string {
-    const d = date instanceof Date ? date : new Date(date)
-    const months = [
-        'January',
-        'February',
-        'March',
-        'April',
-        'May',
-        'June',
-        'July',
-        'August',
-        'September',
-        'October',
-        'November',
-        'December',
-    ]
-    const day = d.getDate()
-    const month = months[d.getMonth()]
-    const year = d.getFullYear()
-
-    const suffix = (n: number) => {
-        const s = ['th', 'st', 'nd', 'rd']
-        const v = n % 100
-        return s[(v - 20) % 10] || s[v] || s[0]
-    }
-
-    return `${month} ${day}${suffix(day)}, ${year}.`
 }
 
 function buildGoogleCalendarUrl(details: ConfirmationEmailProps['details']) {

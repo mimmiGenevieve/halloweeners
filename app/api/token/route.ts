@@ -2,9 +2,10 @@ import { INVITE_COOKIE_NAME } from '@/lib/constants'
 import {
     sanitizeInviteToken,
     normalizeNextPath,
-    isValidGuestToken,
     withAuthError,
-} from '@/lib/helpers'
+} from '@/lib/helpers/misc'
+
+import { isValidGuestToken } from '@/lib/helpers/valid-token'
 import { NextRequest, NextResponse } from 'next/server'
 
 const cookieMaxAgeSeconds = 60 * 60 * 24 * 45

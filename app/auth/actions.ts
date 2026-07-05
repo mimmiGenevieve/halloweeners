@@ -3,15 +3,15 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { INVITE_COOKIE_NAME } from '@/lib/constants'
+import { GuestLookupRow } from '@/lib/queries/guest-auth'
 import {
+    normalizeToken,
     sanitizeInviteToken,
     normalizeNextPath,
     withAuthError,
-    isValidGuestToken,
-    normalizeToken,
     setInviteTokenCookie,
-} from '@/lib/helpers'
-import { GuestLookupRow } from '@/lib/queries/guest-auth'
+} from '@/lib/helpers/misc'
+import { isValidGuestToken } from '@/lib/helpers/valid-token'
 
 export async function getAuthenticatedGuestToken(): Promise<GuestLookupRow | null> {
     const cookieStore = await cookies()

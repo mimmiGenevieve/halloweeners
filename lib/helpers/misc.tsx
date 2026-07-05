@@ -1,11 +1,38 @@
 import {
-    ADMIN_TOKENS_ENV,
     TOKEN_MAX_LENGTH,
     TOKEN_ALLOWED_PATTERN,
     INVITE_COOKIE_NAME,
     INVITE_COOKIE_MAX_AGE_SECONDS,
-} from './constants'
-import { findGuestByToken, GuestLookupRow } from './queries/guest-auth'
+} from '../constants'
+
+export function formatPartyDate(date: Date | string): string {
+    const d = date instanceof Date ? date : new Date(date)
+    const months = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
+    ]
+    const day = d.getDate()
+    const month = months[d.getMonth()]
+    const year = d.getFullYear()
+
+    const suffix = (n: number) => {
+        const s = ['th', 'st', 'nd', 'rd']
+        const v = n % 100
+        return s[(v - 20) % 10] || s[v] || s[0]
+    }
+
+    return `${month} ${day}${suffix(day)}, ${year}.`
+}
 
 export function isMissingRelationError(error: unknown): boolean {
     if (!(error instanceof Error)) {
@@ -17,23 +44,6 @@ export function isMissingRelationError(error: unknown): boolean {
 export function getPreviousYear(year = new Date().getFullYear()): number {
     return year - 1
 }
-
-function parseAdminTokensFromEnv(raw: string | undefined): Set<string> {
-    if (!raw) {
-        return new Set()
-    }
-
-    return new Set(
-        raw
-            .split(',')
-            .map((value) => value.trim())
-            .filter(Boolean)
-    )
-}
-
-const adminTokenAllowList = parseAdminTokensFromEnv(
-    process.env[ADMIN_TOKENS_ENV]
-)
 
 export function normalizeToken(rawToken: string | null | undefined): string {
     return (rawToken ?? '').trim().toLowerCase()
@@ -53,18 +63,6 @@ export function sanitizeInviteToken(
     }
 
     return token
-}
-
-export function isGuestAdmin(user: GuestLookupRow | null): boolean {
-    if (!user) {
-        return false
-    }
-
-    if (user.is_admin === true) {
-        return true
-    }
-
-    return adminTokenAllowList.has(user.token)
 }
 
 export function normalizeNextPath(
@@ -87,24 +85,6 @@ export function normalizeNextPath(
 export function withAuthError(path: string, errorCode: string): string {
     const separator = path.includes('?') ? '&' : '?'
     return `${path}${separator}authError=${encodeURIComponent(errorCode)}`
-}
-
-export async function isValidGuestToken(
-    rawToken: string | null | undefined
-): Promise<GuestLookupRow | null> {
-    const token = sanitizeInviteToken(rawToken)
-
-    if (!token) {
-        return null
-    }
-
-    try {
-        const guest = await findGuestByToken(token)
-        return guest
-    } catch (error) {
-        console.error('Guest token validation failed:', error)
-        return null
-    }
 }
 
 type CookieJar = {
