@@ -95,6 +95,7 @@ export default function Header({
                         </Link>
                         |
                         <Link
+                            data-testid="rsvp-link"
                             href="/rsvp"
                             className={activePage === 'rsvp' ? 'underline' : ''}
                         >
@@ -107,6 +108,7 @@ export default function Header({
             {effectiveIsAdmin && (
                 <>
                     <Link
+                        data-testid="admin-link"
                         href="/admin"
                         className={`text-neutral-400 absolute right-0 p-3 lg:p-10 text-base ${activePage === 'admin' ? 'underline' : ''}`}
                     >

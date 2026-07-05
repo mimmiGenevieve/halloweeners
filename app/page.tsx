@@ -3,7 +3,7 @@ import InvitationShell from './InvitationShell'
 import { useSearchParams } from 'next/navigation'
 import { BoldText } from '@/lib/bold'
 import { useAdminStatusCache } from '@/lib/auth-cache'
-import { useState, useRef, useEffect, Suspense } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { PartyDetailsRow } from '@/lib/types/details'
 
 export type DetailsDataResponse = {
@@ -51,7 +51,7 @@ function DetailsPageContent() {
 
     useEffect(() => {
         if (token) {
-            window.location.href = `/auth/token?token=${encodeURIComponent(token)}&next=/`
+            window.location.href = `/api/token?token=${encodeURIComponent(token)}&next=/`
             return
         }
 
@@ -101,7 +101,10 @@ function DetailsPageContent() {
             {isAuthenticated && (
                 <>
                     {data?.prize && (
-                        <div className="border border-fuchsia-300/50 bg-fuchsia-300/10 rounded p-4 mb-8 text-left flex flex-col gap-4">
+                        <div
+                            data-testid="prev-winner-info"
+                            className="border border-fuchsia-300/50 bg-fuchsia-300/10 rounded p-4 mb-8 text-left flex flex-col gap-4"
+                        >
                             <p className="moontime lg:text-7xl text-5xl text-center">
                                 Honored champion of last year
                             </p>

@@ -44,6 +44,7 @@ export default function TokenAccessForm({
             </p>
             <input
                 name="token"
+                data-testid="token-input"
                 placeholder="Invitation token"
                 className={`${hasError ? 'border-red-300' : 'border-(--foreground)'} border-2 py-2 px-4 rounded`}
                 autoComplete="off"
@@ -65,6 +66,7 @@ export default function TokenAccessForm({
                 type="submit"
                 className="bg-(--foreground) text-(--background) py-2 px-4 rounded mt-10 w-max self-center "
                 disabled={isPending}
+                data-testid="token-submit"
             >
                 {isPending ? 'Entering...' : 'Enter'}
             </button>

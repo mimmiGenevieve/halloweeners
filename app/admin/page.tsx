@@ -34,7 +34,7 @@ function AdminPageContent() {
         if (hasFetched.current) return
 
         if (token) {
-            window.location.href = `/auth/token?token=${encodeURIComponent(token)}&next=/admin`
+            window.location.href = `/api/token?token=${encodeURIComponent(token)}&next=/admin`
             return
         }
 
@@ -73,7 +73,10 @@ function AdminPageContent() {
         >
             {!loading && data && (
                 <>
-                    <p className="lg:text-7xl text-5xl mt-4 font-bold moontime mb-5 text-center">
+                    <p
+                        className="lg:text-7xl text-5xl mt-4 font-bold moontime mb-5 text-center"
+                        data-testid="admin-heading"
+                    >
                         Signed up Guests
                     </p>
 
@@ -124,7 +127,7 @@ function AdminPageContent() {
                             </ul>
                         </div>
                     ) : (
-                        <p>No winners recorded for {previousYear}.</p>
+                        <p>No guests have signed up yet.</p>
                     )}
 
                     <WinnersRegistry

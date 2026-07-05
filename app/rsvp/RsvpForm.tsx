@@ -94,7 +94,11 @@ export default function RsvpForm({
     }
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
+        <form
+            onSubmit={handleSubmit}
+            className="flex flex-col gap-4 w-full"
+            data-testid="rsvp-form"
+        >
             {successMessage && (
                 <p
                     className={`text-center ${
@@ -111,6 +115,7 @@ export default function RsvpForm({
                 placeholder="Name"
                 type="text"
                 id="name"
+                name="name"
                 onChange={(e) => handleFormUpdate('name', e.target.value)}
                 value={formData.name}
                 required
@@ -120,6 +125,7 @@ export default function RsvpForm({
                 placeholder="Email"
                 type="email"
                 id="email"
+                name="email"
                 maxLength={320}
                 value={formData.email}
                 onChange={(e) => handleFormUpdate('email', e.target.value)}
@@ -136,6 +142,7 @@ export default function RsvpForm({
                     <label>
                         <input
                             type="radio"
+                            name="bringingCompanionYes"
                             checked={formData.bringingCompanion === true}
                             onChange={() =>
                                 handleFormUpdate('bringingCompanion', true)
@@ -146,6 +153,7 @@ export default function RsvpForm({
                     <label>
                         <input
                             type="radio"
+                            name="bringingCompanionNo"
                             checked={formData.bringingCompanion === false}
                             onChange={() =>
                                 handleFormUpdate('bringingCompanion', false)
@@ -169,6 +177,7 @@ export default function RsvpForm({
                         placeholder="Kindly share the name of your companion"
                         maxLength={120}
                         value={formData.companionName}
+                        name="companionName"
                         onChange={(e) =>
                             handleFormUpdate('companionName', e.target.value)
                         }
@@ -183,6 +192,7 @@ export default function RsvpForm({
                     className="border-(--foreground) border-2 py-2 px-4 rounded w-full"
                     placeholder="The spirits bid your answer"
                     maxLength={250}
+                    name="cipherAnswer"
                     value={formData.cipherAnswer}
                     onChange={(e) =>
                         handleFormUpdate('cipherAnswer', e.target.value)
