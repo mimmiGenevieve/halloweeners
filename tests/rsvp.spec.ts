@@ -1,3 +1,4 @@
+import { resetRsvpForToken } from './db'
 import { test, expect } from './fixtures'
 
 const GUEST_TOKEN = process.env.E2E_GUEST_TOKEN!
@@ -18,6 +19,10 @@ test.describe('previous-year winner banner', () => {
 })
 
 test.describe('RSVP submission', () => {
+    test.beforeAll(async () => {
+        await resetRsvpForToken(GUEST_TOKEN)
+    })
+
     test('non-winner can submit a first-time RSVP', async ({ rsvpPage }) => {
         await rsvpPage.goto(GUEST_TOKEN)
         await expect(rsvpPage.firstTimeCopy).toBeVisible()
@@ -33,7 +38,7 @@ test.describe('RSVP submission', () => {
     })
 
     test('resubmitting pre-fills the form', async ({ rsvpPage, page }) => {
-        await rsvpPage.goto(GUEST_TOKEN)
+        await rsvpPage.goto(WINNER_TOKEN)
 
         await expect(rsvpPage.returningCopy).toBeVisible()
         await expect(rsvpPage.emailInput).toHaveValue('e2e-guest@example.com')
