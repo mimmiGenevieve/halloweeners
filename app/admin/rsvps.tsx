@@ -33,26 +33,62 @@ export default function AdminPageRSVPs({ guests }: { guests: RsvpResponse }) {
             </p>
 
             {guests.length > 0 ? (
-                <div className="overflow-x-auto rounded">
-                    <ul className="space-y-2 list-disc list-inside">
-                        {guests.map((guest) => (
-                            <li key={guest.id}>
-                                <strong>{guest.name}</strong>
-                                {guest.email ? ` (${guest.email})` : ''}
-
-                                <ul className="pl-5">
+                <div className="space-y-4">
+                    {guests.map((guest) => (
+                        <div
+                            key={guest.id}
+                            className="overflow-x-auto border border-(--foreground)/20 rounded"
+                        >
+                            <table className="w-full text-left border-collapse ">
+                                <thead>
+                                    <tr className="border-b border-(--foreground)/20 bg-(--foreground)/5">
+                                        <th className="p-3" colSpan={2}>
+                                            {guest.name}
+                                            {guest.email && (
+                                                <span className="font-normal text-sm opacity-70">
+                                                    {' '}
+                                                    ({guest.email})
+                                                </span>
+                                            )}
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                     {guest.bringing_plus_one && (
-                                        <li>Bringing: {guest.plus_one_name}</li>
+                                        <tr className="border-b last:border-b-0 border-(--foreground)/10">
+                                            <td className="p-3 w-10 opacity-70">
+                                                Bringing
+                                            </td>
+                                            <td className="p-3">
+                                                {guest.plus_one_name}
+                                            </td>
+                                        </tr>
                                     )}
                                     {guest.cipher_answer && (
-                                        <li>
-                                            Cipher answer: {guest.cipher_answer}
-                                        </li>
+                                        <tr className="border-b last:border-b-0 border-(--foreground)/10">
+                                            <td className="p-3 opacity-70">
+                                                Cipher answer
+                                            </td>
+                                            <td className="p-3">
+                                                {guest.cipher_answer}
+                                            </td>
+                                        </tr>
                                     )}
-                                </ul>
-                            </li>
-                        ))}
-                    </ul>
+                                    {!guest.bringing_plus_one &&
+                                        !guest.cipher_answer && (
+                                            <tr>
+                                                <td
+                                                    className="p-3 opacity-50 italic"
+                                                    colSpan={2}
+                                                >
+                                                    No additional details
+                                                </td>
+                                            </tr>
+                                        )}
+                                </tbody>
+                            </table>
+                        </div>
+                    ))}
                 </div>
             ) : (
                 <p>No guests have signed up yet.</p>
