@@ -1,6 +1,6 @@
 'use client'
 import { GuestOption, WinnerRow } from '@/lib/queries/winners'
-import { inviteGuest, uninviteGuest } from './actions'
+import { inviteGuest, uninviteGuest } from '../actions'
 import { useEffect, useState } from 'react'
 
 type InvitedGuestsProps = {
@@ -59,29 +59,30 @@ export default function InvitedGuests({
     }
 
     return (
-        <>
-            <div className="flex flex-col gap-5 relative">
-                <div>
-                    <h2 className="lg:text-7xl text-5xl font-bold moontime mb-5 text-center">
-                        Invited Guests
-                    </h2>
-                    <p className="text-center mb-8">
-                        Review the invited guests and add more.
-                    </p>
+        <div className="flex flex-col relative">
+            <div className="bg-(--background)/60 lg:p-[50px] p-[25px] lg:pb-0 pb-0">
+                <h2 className="lg:text-7xl text-5xl font-bold moontime mb-5 text-center">
+                    Invited Guests
+                </h2>
+
+                <p className="text-center mb-8">
+                    {guests.length} souls have been invited to the gathering.
+                </p>
+            </div>
+            <div
+                className={`bg-(--background) border border-(--foreground)/20 rounded absolute top-0 right-20 ${uninvitedMsg ? 'opacity-100' : 'opacity-0'} transition-[opacity] duration-500`}
+            >
+                <div className="flex justify-between text-xl text-rose-400 border border-rose-300/50 bg-rose-300/10 rounded px-2 py-1 transition-colors min-h-11 min-w-100 flex items-center">
+                    {uninvitedMsg}
+                    <button onClick={() => setUninvitedMsg('')}>X</button>
                 </div>
-                <div
-                    className={`bg-(--background) border border-(--foreground)/20 rounded absolute top-0 right-20 ${uninvitedMsg ? 'opacity-100' : 'opacity-0'} transition-[opacity] duration-500`}
-                >
-                    <div className="flex justify-between text-xl text-rose-400 border border-rose-300/50 bg-rose-300/10 rounded px-2 py-1 transition-colors min-h-11 min-w-100 flex items-center">
-                        {uninvitedMsg}
-                        <button onClick={() => setUninvitedMsg('')}>X</button>
-                    </div>
-                </div>
+            </div>
+            <div className="bg-(--background)/60 lg:p-[50px] p-[25px] pt-0 lg:pt-0">
                 {guests.length > 0 ? (
-                    <div className="overflow-x-auto border border-(--foreground)/20 rounded relative">
-                        <table className="w-full text-left border-collapse ">
+                    <div className="overflow-x-auto border border-(--foreground)/20 rounded max-h-200 lg:max-h-[calc(100vh-800px)] overflow-y-auto no-scrollbar relative">
+                        <table className="w-full text-left border-separate border-spacing-0">
                             <thead>
-                                <tr className="border-b border-(--foreground)/20">
+                                <tr className="border-b border-(--foreground)/20 sticky top-0 z-10 bg-(--background)/70">
                                     <th className="p-3"></th>
                                     <th className="p-3">Token</th>
                                     <th className="p-3">Name</th>
@@ -154,7 +155,7 @@ export default function InvitedGuests({
                                         </td>
                                     </tr>
                                 ))}
-                                <tr>
+                                <tr className="sticky bottom-0 z-10 bg-(--background)/70">
                                     <td></td>
                                     <td></td>
                                     <td>
@@ -194,6 +195,46 @@ export default function InvitedGuests({
                                         </button>
                                     </td>
                                 </tr>
+                                {/* <tr className="sticky bottom-0">
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <input
+                                            className="p-3"
+                                            placeholder="Name"
+                                            type="text"
+                                            id="name"
+                                            name="name"
+                                            onChange={(e) =>
+                                                setName(e.target.value)
+                                            }
+                                            value={name}
+                                            required
+                                        />
+                                    </td>
+                                    <td className="p-3">
+                                        <button
+                                            className="lg:inline-block hidden text-amber-400 border border-amber-300/50 bg-amber-300/10 rounded px-2 py-1 hover:bg-amber-400/70 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                            onClick={invite}
+                                            disabled={
+                                                name.length === 0 ||
+                                                isSubmitting
+                                            }
+                                        >
+                                            Invite
+                                        </button>
+                                        <button
+                                            className="lg:hidden text-amber-400 border border-amber-300/50 bg-amber-300/10 rounded px-2 py-1 disabled:opacity-50"
+                                            onClick={invite}
+                                            disabled={
+                                                name.length === 0 ||
+                                                isSubmitting
+                                            }
+                                        >
+                                            +
+                                        </button>
+                                    </td>
+                                </tr> */}
                             </tbody>
                         </table>
                     </div>
@@ -201,6 +242,6 @@ export default function InvitedGuests({
                     <p>No invited guests recorded.</p>
                 )}
             </div>
-        </>
+        </div>
     )
 }

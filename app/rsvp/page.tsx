@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, Suspense, useRef } from 'react'
-import InvitationShell from '../InvitationShell'
+import PageLayout from '../PageLayout'
 import { RsvpData } from '@/lib/queries/guest-auth'
 import RsvpForm from './RsvpForm'
 import { useSearchParams } from 'next/navigation'
@@ -54,7 +54,7 @@ function RsvpPageContent() {
     const isAdmin = data?.user?.is_admin ?? cachedIsAdmin
 
     return (
-        <InvitationShell
+        <PageLayout
             activePage="rsvp"
             isAuthenticated={true}
             isLoading={loading}
@@ -85,7 +85,7 @@ function RsvpPageContent() {
                     />
                 </>
             )}
-        </InvitationShell>
+        </PageLayout>
     )
 }
 

@@ -155,7 +155,7 @@ Make sure `DATABASE_URL`, `RESEND_API_KEY`, and `ADMIN_GUEST_TOKENS` are set in 
 │   │   ├── details-data/
 │   │   ├── rsvp-data/
 │   │   └── admin-data/
-│   ├── InvitationShell.tsx
+│   ├── PageLayout.tsx
 │   ├── LoadingSkeleton.tsx
 │   ├── header.tsx
 │   └── page.tsx                 # details page, fed by /api/details-data

@@ -1,9 +1,10 @@
+import { ValidPages } from '@/lib/types/pages'
 import TokenAccessForm from './auth/TokenAccessForm'
 import Header from './header'
 import LoadingSkeleton from './LoadingSkeleton'
 
 type InvitationShellProps = {
-    activePage: 'details' | 'rsvp' | 'admin'
+    activePage: ValidPages
     children: React.ReactNode
     isAuthenticated: boolean
     isLoading?: boolean
@@ -11,7 +12,7 @@ type InvitationShellProps = {
     authError?: string
 }
 
-export default function InvitationShell({
+export default function PageLayout({
     activePage,
     children,
     isAuthenticated,
@@ -20,7 +21,12 @@ export default function InvitationShell({
     authError,
 }: InvitationShellProps) {
     const pathPrefix = activePage === 'details' ? '' : activePage
-    const fullWidth = isAuthenticated && activePage === 'admin'
+    const pageIsAdminPage =
+        activePage === 'admin' ||
+        activePage === 'rsvps' ||
+        activePage === 'addWinners' ||
+        activePage === 'prevWinners' ||
+        activePage === 'invited'
 
     return (
         <div
@@ -34,7 +40,7 @@ export default function InvitationShell({
                 />
 
                 <div
-                    className={`flex flex-col bg-(--background)/60 p-[50px] mt-10 lg:mt-12 gap-2 w-full ${fullWidth ? '' : 'lg:w-200'} overflow-y-auto no-scrollbar text-base`}
+                    className={`flex flex-col ${!pageIsAdminPage || isLoading ? 'bg-(--background)/60 p-[50px]' : ''}  mt-10 lg:mt-12 gap-2 w-full lg:w-200 overflow-y-auto no-scrollbar text-base`}
                 >
                     {isLoading ? (
                         <LoadingSkeleton />

@@ -69,6 +69,9 @@ export async function addCurrentYearWinners(formData: FormData) {
     )
 
     revalidatePath('/admin')
+    revalidatePath('/admin/invited')
+    revalidatePath('/admin/addWinners')
+    revalidatePath('/admin/prevWinners')
     revalidatePath('/rsvp')
 
     return {
@@ -100,6 +103,8 @@ export async function uninviteGuest(guestId: string) {
     revalidateTag('admin-guests', '')
     revalidateTag('admin-rsvps', '')
     revalidatePath('/admin')
+    revalidatePath('/admin/invited')
+    revalidatePath('/admin/rsvps')
     revalidatePath('/rsvp')
 
     return {
@@ -132,6 +137,8 @@ export async function inviteGuest(formData: FormData) {
     revalidateTag('admin-guests', '')
     revalidateTag('admin-rsvps', '')
     revalidatePath('/admin')
+    revalidatePath('/admin/invited')
+    revalidatePath('/admin/rsvps')
     revalidatePath('/rsvp')
 
     return { success: true, insertedCount: 1, token }

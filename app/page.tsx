@@ -1,5 +1,5 @@
 'use client'
-import InvitationShell from './InvitationShell'
+import PageLayout from './PageLayout'
 import { useSearchParams } from 'next/navigation'
 import { BoldText } from '@/lib/bold'
 import { useAdminStatusCache } from '@/lib/auth-cache'
@@ -63,7 +63,7 @@ function DetailsPageContent() {
     const isAdmin = data?.user?.is_admin ?? cachedIsAdmin
 
     return (
-        <InvitationShell
+        <PageLayout
             activePage="details"
             isAuthenticated={isAuthenticated}
             isLoading={loading}
@@ -151,7 +151,7 @@ function DetailsPageContent() {
                     </p>
                 </>
             )}
-        </InvitationShell>
+        </PageLayout>
     )
 }
 
