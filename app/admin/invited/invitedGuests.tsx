@@ -195,46 +195,6 @@ export default function InvitedGuests({
                                         </button>
                                     </td>
                                 </tr>
-                                {/* <tr className="sticky bottom-0">
-                                    <td></td>
-                                    <td></td>
-                                    <td>
-                                        <input
-                                            className="p-3"
-                                            placeholder="Name"
-                                            type="text"
-                                            id="name"
-                                            name="name"
-                                            onChange={(e) =>
-                                                setName(e.target.value)
-                                            }
-                                            value={name}
-                                            required
-                                        />
-                                    </td>
-                                    <td className="p-3">
-                                        <button
-                                            className="lg:inline-block hidden text-amber-400 border border-amber-300/50 bg-amber-300/10 rounded px-2 py-1 hover:bg-amber-400/70 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                            onClick={invite}
-                                            disabled={
-                                                name.length === 0 ||
-                                                isSubmitting
-                                            }
-                                        >
-                                            Invite
-                                        </button>
-                                        <button
-                                            className="lg:hidden text-amber-400 border border-amber-300/50 bg-amber-300/10 rounded px-2 py-1 disabled:opacity-50"
-                                            onClick={invite}
-                                            disabled={
-                                                name.length === 0 ||
-                                                isSubmitting
-                                            }
-                                        >
-                                            +
-                                        </button>
-                                    </td>
-                                </tr> */}
                             </tbody>
                         </table>
                     </div>
