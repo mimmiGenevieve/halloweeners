@@ -45,6 +45,14 @@ export function getPreviousYear(year = new Date().getFullYear()): number {
     return year - 1
 }
 
+export function getWinnerYearOptions(currentYear = new Date().getFullYear()) {
+    const firstYear = 2025
+    return Array.from(
+        { length: Math.max(1, currentYear - firstYear + 1) },
+        (_, index) => firstYear + index
+    )
+}
+
 export function normalizeToken(rawToken: string | null | undefined): string {
     return (rawToken ?? '').trim().toLowerCase()
 }

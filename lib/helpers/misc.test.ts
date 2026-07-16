@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest'
-import { formatPartyDate, normalizeToken, sanitizeInviteToken } from './misc'
+import {
+    formatPartyDate,
+    getWinnerYearOptions,
+    normalizeToken,
+    sanitizeInviteToken,
+} from './misc'
 
 describe('normalizeToken', () => {
     it('lowercases and trims', () => {
@@ -42,5 +47,15 @@ describe('formatPartyDate', () => {
         expect(formatPartyDate('2026-01-11')).toContain('11th') // not "11st"
         expect(formatPartyDate('2026-01-21')).toContain('21st')
         expect(formatPartyDate('2026-01-22')).toContain('22nd')
+    })
+})
+
+describe('getWinnerYearOptions', () => {
+    it('starts from 2025 and includes the current year', () => {
+        expect(getWinnerYearOptions(2026)).toEqual([2025, 2026])
+    })
+
+    it('keeps the range stable when the current year is earlier than 2025', () => {
+        expect(getWinnerYearOptions(2024)).toEqual([2025])
     })
 })

@@ -1,3 +1,4 @@
+import { getPreviousYear } from '@/lib/helpers/misc'
 import { adminJsonResponse, getAdminApiUser } from '../shared'
 import {
     fetchGuestsForAdminForm,
@@ -12,7 +13,7 @@ export async function GET() {
 
     const [guests, winners] = await Promise.all([
         fetchGuestsForAdminForm(),
-        fetchWinnersByYear(),
+        fetchWinnersByYear(getPreviousYear()),
     ])
 
     return adminJsonResponse({
