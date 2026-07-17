@@ -79,7 +79,7 @@ export default function InvitedGuests({
             </div>
             <div className="bg-(--background)/60 lg:p-[50px] p-[25px] pt-0 lg:pt-0">
                 {guests.length > 0 ? (
-                    <div className="overflow-x-auto border border-(--foreground)/20 rounded max-h-200 lg:max-h-[calc(100vh-800px)] overflow-y-auto no-scrollbar relative">
+                    <div className="overflow-x-auto border border-(--foreground)/20 rounded max-h-150 lg:max-h-[calc(100vh-800px)] overflow-y-auto no-scrollbar relative">
                         <table className="w-full text-left border-separate border-spacing-0">
                             <thead>
                                 <tr className="border-b border-(--foreground)/20 sticky top-0 z-10 bg-(--background)/70">
@@ -155,12 +155,12 @@ export default function InvitedGuests({
                                         </td>
                                     </tr>
                                 ))}
-                                <tr className="sticky bottom-0 z-10 bg-(--background)/70">
-                                    <td></td>
-                                    <td></td>
-                                    <td>
+                                <tr>
+                                    <td className="sticky bottom-0 z-10 bg-(--background)/85"></td>
+                                    <td className="sticky bottom-0 z-10 bg-(--background)/85"></td>
+                                    <td className="sticky bottom-0 z-10 bg-(--background)/85">
                                         <input
-                                            className="p-3"
+                                            className="p-3 bg-(--background) border border-amber-300/10"
                                             placeholder="Name"
                                             type="text"
                                             id="name"
@@ -172,27 +172,29 @@ export default function InvitedGuests({
                                             required
                                         />
                                     </td>
-                                    <td className="p-3">
-                                        <button
-                                            className="lg:inline-block hidden text-amber-400 border border-amber-300/50 bg-amber-300/10 rounded px-2 py-1 hover:bg-amber-400/70 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                            onClick={invite}
-                                            disabled={
-                                                name.length === 0 ||
-                                                isSubmitting
-                                            }
-                                        >
-                                            Invite
-                                        </button>
-                                        <button
-                                            className="lg:hidden text-amber-400 border border-amber-300/50 bg-amber-300/10 rounded px-2 py-1 disabled:opacity-50"
-                                            onClick={invite}
-                                            disabled={
-                                                name.length === 0 ||
-                                                isSubmitting
-                                            }
-                                        >
-                                            +
-                                        </button>
+                                    <td className="p-3 sticky bottom-0 z-10 bg-(--background)/85">
+                                        <div className="bg-(--background)">
+                                            <button
+                                                className="lg:inline-block hidden text-amber-400 border border-amber-300/50 bg-amber-300/10 rounded px-2 py-1 hover:bg-amber-400/70 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                                onClick={invite}
+                                                disabled={
+                                                    name.length === 0 ||
+                                                    isSubmitting
+                                                }
+                                            >
+                                                Invite
+                                            </button>
+                                            <button
+                                                className="lg:hidden text-amber-400 border border-amber-300/50 bg-amber-300/10 rounded px-2 py-1 disabled:opacity-50"
+                                                onClick={invite}
+                                                disabled={
+                                                    name.length === 0 ||
+                                                    isSubmitting
+                                                }
+                                            >
+                                                +
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>
