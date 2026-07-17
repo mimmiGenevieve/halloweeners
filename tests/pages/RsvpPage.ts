@@ -19,6 +19,7 @@ export class RsvpPage {
     readonly companionNo: Locator
     readonly companionNameInput: Locator
     readonly cipherInput: Locator
+    readonly tocCheckbox: Locator
     readonly submitButton: Locator
     readonly successMessage: Locator
     readonly errorMessage: Locator
@@ -46,12 +47,14 @@ export class RsvpPage {
         this.firstTimeCopy = page.getByTestId('rsvp-first-time')
         this.returningCopy = page.getByTestId('rsvp-returning')
         this.rsvpLink = page.getByTestId('rsvp-link')
+        this.tocCheckbox = page.locator('input[name="toc"]')
     }
 
     async goto(token?: string) {
-        await this.page.goto(token ? `/?token=${token}` : '/')
-        await expect(this.rsvpLink).toBeVisible()
-        await this.rsvpLink.click()
+        await this.page.goto(token ? `/rsvp?token=${token}` : '/rsvp')
+
+        await this.page.waitForLoadState('networkidle', { timeout: 30000 }).catch(() => undefined)
+        await expect(this.heading).toBeVisible({ timeout: 30000 })
     }
 
     async fillAndSubmit(input: RsvpInput) {
@@ -64,6 +67,8 @@ export class RsvpPage {
             await this.companionNameInput.fill(input.companionName)
         }
         if (input.cipherAnswer) await this.cipherInput.fill(input.cipherAnswer)
+
+        await this.tocCheckbox.click()
         await this.submitButton.click()
     }
 

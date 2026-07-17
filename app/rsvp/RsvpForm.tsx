@@ -206,6 +206,7 @@ export default function RsvpForm({
             <label>
                 <input
                     type="checkbox"
+                    name="toc"
                     checked={formData.toc}
                     onChange={(e) => handleFormUpdate('toc', !formData.toc)}
                 />{' '}
