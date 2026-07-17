@@ -1,8 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { addCurrentYearWinners } from './actions'
 import type { GuestOption, PrizeOption } from '@/lib/queries/winners'
+import { addCurrentYearWinners } from '../../actions'
 
 type WinnersAdminFormProps = {
     guests: GuestOption[]

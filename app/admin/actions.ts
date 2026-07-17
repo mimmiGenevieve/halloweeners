@@ -58,18 +58,27 @@ export async function addCurrentYearWinners(formData: FormData) {
 
     const prizeId = prizeRow.id
 
+    const guestRows = (await sql`
+        SELECT id, name
+        FROM guests
+        WHERE id = ANY (${guestIds})
+    `) as Array<{ id: string; name: string }>
+
+    const guestById = new Map(guestRows.map((guest) => [guest.id, guest.name]))
+
     await sql.transaction(
-        guestIds.map(
-            (guestId) =>
-                sql`
-                INSERT INTO prize_recipients (prize_id, guest_id)
-                VALUES (${prizeId}, ${guestId})
+        guestIds.map((guestId) => {
+            const guestName = guestById.get(guestId) ?? ''
+            return sql`
+                INSERT INTO prize_recipients (prize_id, guest_id, guest_name)
+                VALUES (${prizeId}, ${guestId}, ${guestName || null})
             `
-        )
+        })
     )
 
-    revalidatePath('/admin')
-    revalidatePath('/rsvp')
+    revalidateTag('admin-winners', '')
+    revalidatePath('/admin/invited')
+    revalidatePath('/admin/winners/previous')
 
     return {
         success: true,
@@ -90,16 +99,18 @@ export async function uninviteGuest(guestId: string) {
     try {
         await sql.transaction([
             sql`DELETE FROM rsvps WHERE guest_id = ${guestId}`,
+            sql`UPDATE prize_recipients SET guest_id = NULL WHERE guest_id = ${guestId}`,
             sql`DELETE FROM guests WHERE id = ${guestId}`,
         ])
     } catch (error) {
         console.error('Failed to uninvite guest:', error)
         throw error
     }
-
     revalidateTag('admin-guests', '')
     revalidateTag('admin-rsvps', '')
     revalidatePath('/admin')
+    revalidatePath('/admin/invited')
+    revalidatePath('/admin/rsvps')
     revalidatePath('/rsvp')
 
     return {
@@ -132,6 +143,8 @@ export async function inviteGuest(formData: FormData) {
     revalidateTag('admin-guests', '')
     revalidateTag('admin-rsvps', '')
     revalidatePath('/admin')
+    revalidatePath('/admin/invited')
+    revalidatePath('/admin/rsvps')
     revalidatePath('/rsvp')
 
     return { success: true, insertedCount: 1, token }

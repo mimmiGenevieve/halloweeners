@@ -25,7 +25,7 @@ export type PrizeOption = {
 
 export type WinnerRow = {
     prize_id: string
-    guest_id: string
+    guest_id: string | null
     guest_name: string
     prize_name: string
     notes: string | null
@@ -57,23 +57,23 @@ export async function fetchGuestPreviousYearPrizes(
     }
 }
 
-export async function fetchWinnersByYear(): Promise<WinnerRow[]> {
+export async function fetchWinnersByYear(year: number): Promise<WinnerRow[]> {
     cacheLife('minutes')
-    const year = getPreviousYear()
+    cacheTag('admin-winners')
     try {
         const result = await sql`
             SELECT
                 p.id AS prize_id,
-                g.id AS guest_id,
-                g.name AS guest_name,
+                pr.guest_id AS guest_id,
+                COALESCE(g.name, pr.guest_name) AS guest_name,
                 pc.name AS prize_name,
                 p.notes
             FROM prizes p
             INNER JOIN prize_categories pc ON pc.id = p.category_id
             INNER JOIN prize_recipients pr ON pr.prize_id = p.id
-            INNER JOIN guests g ON g.id = pr.guest_id
+            LEFT JOIN guests g ON g.id = pr.guest_id
             WHERE p.year = ${year}
-            ORDER BY pc.name ASC, g.name ASC
+            ORDER BY pc.name ASC, COALESCE(g.name, pr.guest_name) ASC
         `
         return result as WinnerRow[]
     } catch (error) {

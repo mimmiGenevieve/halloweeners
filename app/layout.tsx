@@ -33,7 +33,7 @@ export default function RootLayout({
                     content="width=device-width, initial-scale=1.0"
                 />
             </head>
-            <body className="min-h-full flex flex-col">{children}</body>
+            <body>{children}</body>
         </html>
     )
 }
