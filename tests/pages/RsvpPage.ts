@@ -53,7 +53,9 @@ export class RsvpPage {
     async goto(token?: string) {
         await this.page.goto(token ? `/rsvp?token=${token}` : '/rsvp')
 
-        await this.page.waitForLoadState('networkidle', { timeout: 30000 }).catch(() => undefined)
+        await this.page
+            .waitForLoadState('networkidle', { timeout: 30000 })
+            .catch(() => undefined)
         await expect(this.heading).toBeVisible({ timeout: 30000 })
     }
 
