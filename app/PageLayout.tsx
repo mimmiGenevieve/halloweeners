@@ -2,6 +2,7 @@ import { ValidPages } from '@/lib/types/pages'
 import TokenAccessForm from './auth/TokenAccessForm'
 import Header from './header'
 import LoadingSkeleton from './LoadingSkeleton'
+import TermsAndConditions from './TermsAndConditions'
 
 type InvitationShellProps = {
     activePage: ValidPages
@@ -54,25 +55,28 @@ export default function PageLayout({
                     )}
                 </div>
             </main>
-            <footer className="text-sm text-center mt-12 mb-8 opacity-70 px-4">
-                <p>
-                    This site uses a single cookie to remember your invitation
-                    token, so you don't have to re-enter it. Your name and email
-                    are stored to manage your RSVP and send confirmation
-                    details—nothing is shared with third parties.
-                </p>
-                <p className="mt-1">
-                    Questions about your data, or want it removed?{' '}
-                    <a
-                        href="mailto:mimmisandgren+halloweeners@gmail.com"
-                        className="underline"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        You know who to ask
-                    </a>
-                    .
-                </p>
+            <footer className="text-sm text-center mt-12 mb-8  px-4">
+                <div className="opacity-70">
+                    <p>
+                        This site uses a single cookie to remember your
+                        invitation token, so you don't have to re-enter it. Your
+                        name and email are stored to manage your RSVP and send
+                        confirmation details—nothing is shared with third
+                        parties.
+                    </p>
+                    <p className="mt-1">
+                        Questions about your data, or want it removed?{' '}
+                        <a
+                            href="mailto:mimmisandgren+halloweeners@gmail.com"
+                            className="underline"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            You know who to ask
+                        </a>
+                        .
+                    </p>
+                </div>
             </footer>
         </div>
     )

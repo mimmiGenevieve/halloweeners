@@ -4,6 +4,7 @@ import { RsvpData } from '@/lib/queries/guest-auth'
 import { sendConfirmationEmail, submitRsvp } from './actions'
 import { useState } from 'react'
 import { PartyInfo } from '@/lib/types/details'
+import TermsAndConditions from '../TermsAndConditions'
 
 type RsvpFormProps = {
     user: { id: string; name: string; token?: string } | null
@@ -18,6 +19,7 @@ type FormDataType = {
     bringingCompanion: boolean
     companionName?: string
     cipherAnswer?: string
+    toc: boolean
 }
 
 export default function RsvpForm({
@@ -32,6 +34,7 @@ export default function RsvpForm({
         bringingCompanion: existingRsvp?.bringing_plus_one ?? false,
         companionName: existingRsvp?.plus_one_name ?? '',
         cipherAnswer: existingRsvp?.cipher_answer ?? '',
+        toc: !!existingRsvp,
     })
     const [hasEdited, setHasEdited] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -200,9 +203,17 @@ export default function RsvpForm({
                 />
             </label>
 
+            <label>
+                <input
+                    type="checkbox"
+                    checked={formData.toc}
+                    onChange={(e) => handleFormUpdate('toc', !formData.toc)}
+                />{' '}
+                I have read and agree with the <TermsAndConditions />
+            </label>
             <button
                 type="submit"
-                disabled={isSubmitting || !hasEdited}
+                disabled={isSubmitting || !hasEdited || !formData.toc}
                 className="bg-(--foreground) text-(--background) py-2 px-4 rounded mt-4 w-max self-center disabled:opacity-50"
             >
                 {isSubmitting ? 'Submitting...' : 'Submit'}

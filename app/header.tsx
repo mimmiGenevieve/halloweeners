@@ -168,27 +168,32 @@ export default function Header({
                 <p className="lg:text-2xl text-xl mt-4">
                     An Invitation to the Eternal Night.
                 </p>
-                {isAuthenticated && (
-                    <div className="flex flex-row items-center justify-between mt-10 gap-10 lg:text-2xl text-xl">
-                        <Link
-                            href="/"
-                            className={
-                                activePage === 'details' ? 'underline' : ''
-                            }
-                        >
-                            Details
-                        </Link>
-                        |
-                        <Link
-                            data-testid="rsvp-link"
-                            href="/rsvp"
-                            className={activePage === 'rsvp' ? 'underline' : ''}
-                        >
-                            RSVP
-                        </Link>
-                    </div>
-                )}
-                {effectiveIsAdmin && (
+                <div
+                    className={`flex flex-row items-center justify-between mt-10 gap-10 lg:text-2xl text-xl ${isAuthenticated ? '' : 'text-neutral-400'}`}
+                >
+                    <Link
+                        href={isAuthenticated ? '/' : '#'}
+                        className={`${
+                            activePage === 'details' && isAuthenticated
+                                ? 'underline'
+                                : ''
+                        } ${!isAuthenticated ? 'cursor-default' : ''}`}
+                    >
+                        Details
+                    </Link>
+                    |
+                    <Link
+                        data-testid="rsvp-link"
+                        href={isAuthenticated ? '/rsvp' : '#'}
+                        className={`${
+                            activePage === 'rsvp' ? 'underline' : ''
+                        } ${!isAuthenticated ? 'cursor-default' : ''}`}
+                    >
+                        RSVP
+                    </Link>
+                </div>
+
+                {effectiveIsAdmin && isAuthenticated && (
                     <>
                         <div className="hidden lg:inline-block absolute right-20 p-10 text-neutral-400 text-base min-w-70">
                             <Link
