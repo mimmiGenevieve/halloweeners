@@ -94,7 +94,7 @@ function TermsModal({ onClose }: { onClose: () => void }) {
                         Terms & Conditions
                     </p>
                     <p className="text-center opacity-70 mb-1 text-sm">
-                        Last updated: October 2026
+                        Last updated: August 2026
                     </p>
                     <p className="text-center opacity-70  text-sm">
                         This Agreement governs a Guest&apos;s attendance at the
@@ -108,7 +108,7 @@ function TermsModal({ onClose }: { onClose: () => void }) {
                     <ul className="flex flex-col gap-2 mb-6">
                         {DEFINITIONS.map((definition) => (
                             <li key={definition.term} className="opacity-90">
-                                <span className="font-bold not-italic">
+                                <span className="font-bold">
                                     {definition.term}
                                 </span>{' '}
                                 {definition.body}

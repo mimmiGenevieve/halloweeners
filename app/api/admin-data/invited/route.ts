@@ -4,6 +4,7 @@ import {
     fetchGuestsForAdminForm,
     fetchWinnersByYear,
 } from '@/lib/queries/winners'
+import { filterInvitedGuests } from '@/lib/queries/guest-filters'
 
 export async function GET() {
     const user = await getAdminApiUser()
@@ -18,7 +19,7 @@ export async function GET() {
 
     return adminJsonResponse({
         user,
-        guests,
+        guests: filterInvitedGuests(guests),
         winners,
     })
 }

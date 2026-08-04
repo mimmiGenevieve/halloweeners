@@ -2,11 +2,13 @@
 import { sql } from '@/lib/neon'
 import { cacheLife, cacheTag } from 'next/cache'
 import { getPreviousYear, isMissingRelationError } from '../helpers/misc'
+export { filterInvitedGuests } from './guest-filters'
 
 export type GuestOption = {
     id: string
     name: string
     token: string
+    is_admin?: boolean | null
 }
 
 export type SignedUpGuestOption = {
@@ -88,7 +90,7 @@ export async function fetchGuestsForAdminForm(): Promise<GuestOption[]> {
     cacheLife('minutes')
     cacheTag('admin-guests')
     const result = await sql`
-        SELECT id, name, token
+        SELECT id, name, token, is_admin
         FROM guests
         ORDER BY name ASC
     `

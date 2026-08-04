@@ -172,22 +172,34 @@ export default function Header({
                     className={`flex flex-row items-center justify-between mt-10 gap-10 lg:text-2xl text-xl ${isAuthenticated ? '' : 'text-neutral-400'}`}
                 >
                     <Link
-                        href={isAuthenticated ? '/' : '#'}
+                        href="/"
                         className={`${
                             activePage === 'details' && isAuthenticated
                                 ? 'underline'
                                 : ''
                         } ${!isAuthenticated ? 'cursor-default' : ''}`}
+                        aria-disabled={!isAuthenticated}
+                        onClick={(event) => {
+                            if (!isAuthenticated) {
+                                event.preventDefault()
+                            }
+                        }}
                     >
                         Details
                     </Link>
                     |
                     <Link
                         data-testid="rsvp-link"
-                        href={isAuthenticated ? '/rsvp' : '#'}
+                        href={isAuthenticated ? '/rsvp' : '/'}
                         className={`${
                             activePage === 'rsvp' ? 'underline' : ''
                         } ${!isAuthenticated ? 'cursor-default' : ''}`}
+                        aria-disabled={!isAuthenticated}
+                        onClick={(event) => {
+                            if (!isAuthenticated) {
+                                event.preventDefault()
+                            }
+                        }}
                     >
                         RSVP
                     </Link>

@@ -133,7 +133,7 @@ export default function RsvpForm({
                 value={formData.email}
                 onChange={(e) => handleFormUpdate('email', e.target.value)}
             />
-            <span className="text-xs italic opacity-70 -mt-2">
+            <span className="text-xs opacity-70 -mt-2">
                 Used only to send your confirmation and/or any updates to the
                 details of the party. If you prefer not to share your email, the
                 spirits will accept your answer without it-they have other means
@@ -166,10 +166,10 @@ export default function RsvpForm({
                     </label>
                 </div>
 
-                <p className="italic ">
+                <span className="text-xs opacity-70">
                     You may bring a companion; be it a friend, partner, or even
                     a particularly charming houseplant. But only one.
-                </p>
+                </span>
             </div>
             {formData.bringingCompanion && (
                 <label>
@@ -187,7 +187,6 @@ export default function RsvpForm({
                     />
                 </label>
             )}
-
             <label>
                 If you have solved the cipher, now is the time to write the
                 answer.
@@ -202,16 +201,19 @@ export default function RsvpForm({
                     }
                 />
             </label>
+            <div>
+                <label>
+                    <input
+                        type="checkbox"
+                        name="toc"
+                        checked={formData.toc}
+                        onChange={(e) => handleFormUpdate('toc', !formData.toc)}
+                    />{' '}
+                    I have read and agree with the
+                </label>{' '}
+                <TermsAndConditions />
+            </div>
 
-            <label>
-                <input
-                    type="checkbox"
-                    name="toc"
-                    checked={formData.toc}
-                    onChange={(e) => handleFormUpdate('toc', !formData.toc)}
-                />{' '}
-                I have read and agree with the <TermsAndConditions />
-            </label>
             <button
                 type="submit"
                 disabled={isSubmitting || !hasEdited || !formData.toc}

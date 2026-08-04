@@ -28,7 +28,7 @@ export default function LastYearWinners({
     return (
         <div className="bg-(--background)/60 lg:p-[50px] p-[25px] pt-0 lg:pt-0">
             {isLoading ? (
-                <div className="overflow-x-auto border border-(--foreground)/20 rounded">
+                <div className="overflow-x-auto border border-(--foreground)/20 rounded rounded-tr-none">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="border-b border-(--foreground)/20">
@@ -46,7 +46,7 @@ export default function LastYearWinners({
                     </table>
                 </div>
             ) : previousYearWinners.length > 0 ? (
-                <div className="overflow-x-auto border border-(--foreground)/20 rounded">
+                <div className="overflow-x-auto border border-(--foreground)/20 rounded rounded-tr-none">
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="border-b border-(--foreground)/20">
@@ -72,7 +72,9 @@ export default function LastYearWinners({
                     </table>
                 </div>
             ) : (
-                <p>No winners recorded for {previousYear}.</p>
+                <div className="overflow-x-auto border border-(--foreground)/20 rounded rounded-tr-none p-5">
+                    <p>No winners recorded for {previousYear}.</p>
+                </div>
             )}
         </div>
     )

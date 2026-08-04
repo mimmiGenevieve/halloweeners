@@ -93,7 +93,7 @@ function AdminPagePreviousWinnersContent() {
                                 onChange={(event) =>
                                     setSelectedYear(Number(event.target.value))
                                 }
-                                className="border-(--foreground)/20 border-b-0 border-2 py-2 px-4 rounded min-w-20"
+                                className="border-(--foreground)/20 border-b-0 border-1 py-2 px-4 rounded rounded-b-none min-w-20"
                             >
                                 {availableYears.map((year) => (
                                     <option key={year} value={year}>

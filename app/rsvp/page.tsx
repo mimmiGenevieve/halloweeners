@@ -68,11 +68,12 @@ function RsvpPageContent() {
                     >
                         Registration to attend
                     </p>
+
                     <p
                         className="italic text-center mb-8 whitespace-pre-wrap"
                         data-testid={`${data.existingRsvp ? 'rsvp-returning' : 'rsvp-first-time'}`}
                     >
-                        {data.existingRsvp
+                        {!data.existingRsvp
                             ? 'The spirits already hold your name.\nYou may revise your fate below until October 28th.'
                             : 'The spirits require your answer no later than October 28th.'}
                     </p>
@@ -83,6 +84,13 @@ function RsvpPageContent() {
                         prize={data.prize}
                         partyDetails={data.partyDetails}
                     />
+                    {!data.existingRsvp && (
+                        <p className="text-xs opacity-70 mt-5">
+                            Regret saying yes to joining the nights festivities?
+                            There is no undoing what has been done. Say it to me
+                            directly, you coward.
+                        </p>
+                    )}
                 </>
             )}
         </PageLayout>
