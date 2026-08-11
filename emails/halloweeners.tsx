@@ -14,7 +14,6 @@ import { PartyDetailsRow, CalendarDetailsRow } from '@/lib/types/details'
 import { formatPartyDate } from '@/lib/helpers/misc'
 
 type ConfirmationEmailProps = {
-    userToken: string
     name: string
     prize?: string
     companionName?: string
@@ -38,7 +37,6 @@ function buildGoogleCalendarUrl(details: ConfirmationEmailProps['details']) {
 }
 
 export default function ConfirmationEmail({
-    userToken,
     name,
     prize,
     companionName,
@@ -47,7 +45,7 @@ export default function ConfirmationEmail({
     const googleCalendarUrl = buildGoogleCalendarUrl(details)
     const dateLabel = formatPartyDate(details.party_details.date)
     const timeLabel = details.party_details.end
-        ? `${details.party_details.start} — ${details.party_details.end}`
+        ? `${details.party_details.start} - ${details.party_details.end}`
         : details.party_details.start
 
     return (
@@ -73,7 +71,7 @@ export default function ConfirmationEmail({
                                 : 'name'}
                             , and your place among the gathering is secured. We
                             shall expect your presence as the veil thins on the
-                            night of {dateLabel}.
+                            night of {dateLabel}
                         </Text>
                         <Text style={{ ...paragraph, marginBottom: 0 }}>
                             The hour and location are etched below. Do not lose
@@ -84,7 +82,7 @@ export default function ConfirmationEmail({
                     <Section style={detailsBox}>
                         <Text style={label}>When</Text>
                         <Text style={value}>
-                            {dateLabel} — {timeLabel}
+                            {dateLabel} {timeLabel}
                         </Text>
                         <Text style={label}>Where</Text>
                         <Text style={{ ...value, marginBottom: 0 }}>
@@ -152,7 +150,6 @@ export default function ConfirmationEmail({
 }
 
 ConfirmationEmail.PreviewProps = {
-    userToken: 'abc123',
     name: 'Mimmi',
     prize: 'Scariest',
     companionName: 'Sebastian',
@@ -160,7 +157,7 @@ ConfirmationEmail.PreviewProps = {
         party_details: {
             date: new Date('2026-10-31'),
             start: '18:00',
-            end: '',
+            end: 'late',
             address: 'Some Street 1, Gothenburg',
             address_extra: null,
         },

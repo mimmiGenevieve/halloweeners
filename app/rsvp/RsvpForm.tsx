@@ -71,9 +71,8 @@ export default function RsvpForm({
 
             await submitRsvp(formDataObj)
 
-            if (formData.email && partyDetails && user?.token) {
-                sendConfirmationEmail(
-                    user.token,
+            if (formData.email && partyDetails) {
+                await sendConfirmationEmail(
                     partyDetails,
                     formData.name,
                     formData.email,

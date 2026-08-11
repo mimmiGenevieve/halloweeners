@@ -100,7 +100,6 @@ export async function submitRsvp(formData: FormData) {
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function sendConfirmationEmail(
-    token: string,
     partyDetails: PartyInfo,
     name: string,
     email: string,
@@ -112,7 +111,6 @@ export async function sendConfirmationEmail(
         to: email,
         subject: partyDetails.email_details.subject,
         react: ConfirmationEmail({
-            userToken: token,
             name,
             companionName,
             prize,
