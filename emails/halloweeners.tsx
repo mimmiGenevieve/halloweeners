@@ -176,7 +176,12 @@ const main = {
     padding: '40px 20px',
 }
 const container = { maxWidth: '600px', margin: '0 auto' }
-const titleStyle = { margin: 0, fontSize: '48px', color: '#ffffff' }
+const titleStyle = {
+    margin: 0,
+    fontSize: '48px',
+    color: '#ffffff',
+    lineHeight: '0.7',
+}
 const subtitleStyle = {
     margin: '8px 0 0 0',
     fontSize: '14px',
