@@ -70,20 +70,13 @@ function RsvpPageContent() {
                     </p>
 
                     <p
-                        className="italic text-center mb-8 whitespace-pre-wrap"
+                        className="text-center mb-8 whitespace-pre-wrap"
                         data-testid={`${data.existingRsvp ? 'rsvp-returning' : 'rsvp-first-time'}`}
                     >
                         {data.existingRsvp
-                            ? 'The spirits already hold your name.\nYou may revise your fate below until October 28th.'
-                            : 'The spirits require your answer no later than October 28th.'}
+                            ? 'The spirits already hold your name.\nIt is too late to change your fate.'
+                            : 'The spirits closed their book on October 28th.\nYou did not answer in time, and now the names are sealed.'}
                     </p>
-
-                    <RsvpForm
-                        user={{ id: data.user.id, name: data.user.name }}
-                        existingRsvp={data.existingRsvp}
-                        prize={data.prize}
-                        partyDetails={data.partyDetails}
-                    />
                     {data.existingRsvp && (
                         <p className="text-xs opacity-70 mt-5">
                             Regret saying yes to joining the nights festivities?
